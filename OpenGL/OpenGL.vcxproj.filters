@@ -18,12 +18,12 @@
     <ClCompile Include="src\Application.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\Include\glad.c">
+    <ClCompile Include="src\include\glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Include\Application.h">
+    <ClInclude Include="src\include\Application.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
