@@ -1,3 +1,7 @@
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 #include "Application.h"
 #include "Shader.h"
 
@@ -37,6 +41,20 @@ int main()
 	GLCall(glViewport(0, 0, 800, 600));
 	//拖拽回调 改变渲染窗口大小
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	// 设置 ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+	// 设置 ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsClassic();
+
+	// 设置 ImGui Platform/Renderer backends
+	const char* glsl_version = "#version 130";
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
 	{
 		//在上下文之后
 		GLfloat vertices[] = {
@@ -89,9 +107,8 @@ int main()
 
 
 		//6  着色器程序
-		Shader shader("res/shaders/Vertex.Vshader", "res/shaders/Fragment1.Fshader");
-		shader.Bind();
-
+		Shader shader("res/shaders/Vertex.Vshader", "res/shaders/Fragment.Fshader");
+		
 		//线框模式
 		//GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 		//默认模式
@@ -107,12 +124,38 @@ int main()
 			GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 			GLCall(glClear(GL_COLOR_BUFFER_BIT));//清屏函数  GL_COLOR_BUFFER_BIT清理颜色缓冲
 
+			// Start the Dear ImGui frame
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
+			{//ImGui
+				static float f = 0.0f;
+				static int counter = 0;
+
+				ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+				ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+
+				if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+					counter++;
+				ImGui::SameLine();
+				ImGui::Text("counter = %d", counter);
+
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				ImGui::End();
+			}
+
 			//  绘制物体
 			shader.Bind();
 			GLCall(glBindVertexArray(VAO));
 			GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
 			GLCall(glBindVertexArray(0));
+
+			// ImGui Rendering  
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			// 检查并调用事件，交换缓冲
 			glfwSwapBuffers(window);
@@ -125,7 +168,13 @@ int main()
 		GLCall(glDeleteBuffers(1, &EBO));
 	}
 
+	// Cleanup
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
 	//关闭
+	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
 }
