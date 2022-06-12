@@ -33,25 +33,41 @@ int main()
 
     //在上下文之后
     GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
+        0.5f, 0.5f, 0.0f,   // 右上角
+        0.5f, -0.5f, 0.0f,  // 右下角
+        -0.5f, -0.5f, 0.0f, // 左下角
+        -0.5f, 0.5f, 0.0f   // 左上角
     };
 
-    //  绑定VAO
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
+    GLuint indices[] = {
+        // 注意索引从0开始! 
+        // 此例的索引(0,1,2,3)就是顶点数组vertices的下标，
+        // 这样可以由下标代表顶点组合成矩形
+        0, 1, 3, // 第一个三角形
+        1, 2, 3  // 第二个三角形
+    };
+
+    //  创建VAO, VBO, EBO
+    GLuint VAO, VBO, EBO;
+    GLCall(glGenVertexArrays(1, &VAO));
+    GLCall(glGenBuffers(1, &VBO));//创建VBO
+    GLCall(glGenBuffers(1, &EBO));//创建EBO = IBO:index buffer
+
+    //1  绑定VAO缓冲对象
     GLCall(glBindVertexArray(VAO));
 
-    //  复制顶点数组到缓冲中供OpenGL使用
-    GLuint VBO;
-    GLCall(glGenBuffers(1, &VBO));//创建VBO
+    //2  绑定VBO（顶点数组）到缓冲中供OpenGL使用
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, VBO));//顶点缓冲对象，顶点缓冲区 GL_ARRAY_BUFFER是一个缓冲目标
     GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));//填充数据
                                                                                       //GL_STATIC_DRAW ：数据不会或几乎不会改变。
                                                                                       //GL_DYNAMIC_DRAW：数据会被改变很多。
                                                                                       //GL_STREAM_DRAW ：数据每次绘制时都会改变。
-    //  设置顶点属性指针
+    
+    //3  绑定EBO（索引数组）到一个索引缓冲中，供OpenGL使用 
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+
+    //4  设置顶点属性指针
     //顶点属性 layout(location = 0)
     //顶点属性的大小
     //参数指定数据的类型
@@ -61,14 +77,21 @@ int main()
     GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
     GLCall(glEnableVertexAttribArray(0));
     
-    //解绑VAO
+    //  解绑VAO
     GLCall(glBindVertexArray(0));
 
-    //  着色器程序
+    //6  着色器程序
+    /*Shader shader("res/shaders/Basic.shader");
+    shader.Bind();*/
     ShaderSource source = ParseShader("res/shaders/Basic.shader");
     std::cout << source.VertexSource << std::endl;
     std::cout << source.FragmentSource << std::endl;
-    unsigned int m_ShaderID = CreateShader(source.VertexSource, source.FragmentSource);
+    unsigned int shaderProgram = CreateShader(source.VertexSource, source.FragmentSource);
+
+    //线框模式
+    //GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+    //默认模式
+    GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 
     //渲染循环
     while (!glfwWindowShouldClose(window))
@@ -82,15 +105,22 @@ int main()
 
         
         //  绘制物体
-        GLCall(glUseProgram(m_ShaderID));
+        GLCall(glUseProgram(shaderProgram));
         GLCall(glBindVertexArray(VAO));
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+
         GLCall(glBindVertexArray(0));
 
         // 检查并调用事件，交换缓冲
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    //资源释放
+    GLCall(glDeleteVertexArrays(1, &VAO));
+    GLCall(glDeleteBuffers(1, &VBO));
+    GLCall(glDeleteBuffers(1, &EBO));
+    GLCall(glDeleteProgram(shaderProgram));
 
     //关闭
     glfwTerminate();
