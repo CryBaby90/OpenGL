@@ -1,5 +1,6 @@
 #include "Application.h"
 
+//标准绘制流程
 int main()
 {
     glfwInit();
@@ -7,7 +8,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    
+
     //创建window
     GLFWwindow* window = glfwCreateWindow(800, 600, "MyOpenGL", NULL, NULL);
     if (!window)
@@ -62,7 +63,7 @@ int main()
                                                                                       //GL_STATIC_DRAW ：数据不会或几乎不会改变。
                                                                                       //GL_DYNAMIC_DRAW：数据会被改变很多。
                                                                                       //GL_STREAM_DRAW ：数据每次绘制时都会改变。
-    
+
     //3  绑定EBO（索引数组）到一个索引缓冲中，供OpenGL使用 
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
@@ -76,7 +77,7 @@ int main()
     //位置数据在缓冲中起始位置的偏移量(Offset)。由于位置数据在数组的开头，所以这里是0
     GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
     GLCall(glEnableVertexAttribArray(0));
-    
+
     //  解绑VAO  之前不要解绑VBO EBO 否则要重新绑定
     GLCall(glBindVertexArray(0));
 
@@ -103,7 +104,7 @@ int main()
         GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
         GLCall(glClear(GL_COLOR_BUFFER_BIT));//清屏函数  GL_COLOR_BUFFER_BIT清理颜色缓冲
 
-        
+
         //  绘制物体
         GLCall(glUseProgram(shaderProgram));
         GLCall(glBindVertexArray(VAO));
@@ -124,5 +125,5 @@ int main()
 
     //关闭
     glfwTerminate();
-	return 0;
+    return 0;
 }
