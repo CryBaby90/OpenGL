@@ -21,9 +21,18 @@
     <ClCompile Include="src\include\glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLCall.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\GLCall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\Shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\include\Application.h">

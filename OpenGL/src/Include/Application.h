@@ -1,11 +1,8 @@
 #pragma once
-//#include "Shader.h"
-#include "GLCall.h"
-#include "GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
-#include <fstream>
-#include <sstream>
-#include <string>
+#include "GLCall.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -18,6 +15,7 @@ void processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 }
 
+/*
 struct ShaderSource
 {
 	::std::string VertexSource;
@@ -135,3 +133,4 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
 	GLCall(glDeleteShader(fs));
 	return shaderProgram;
 }
+*/
