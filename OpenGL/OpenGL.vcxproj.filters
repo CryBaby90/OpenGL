@@ -23,8 +23,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\include\GLCall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="src\include\Application.h">
       <Filter>头文件</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\Basic.shader" />
   </ItemGroup>
 </Project>

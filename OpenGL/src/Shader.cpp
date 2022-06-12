@@ -1,30 +1,18 @@
-#pragma once
-//#include "Shader.h"
-#include "GLCall.h"
-#include "GLFW/glfw3.h"
+#include "Shader.h"
 
-#include <fstream>
-#include <sstream>
-#include <string>
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+Shader::Shader(const::std::string& filePath)
+	:m_ShaderID(0), m_FilePath(filePath)
 {
-    GLCall(glViewport(0, 0, width, height));
+	ShaderSource source = ParseShader(filePath);
+	m_ShaderID = CreateShader(source.VertexSource, source.FragmentSource);
 }
 
-void processInput(GLFWwindow* window)
+Shader::~Shader()
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+	GLCall(glDeleteProgram(m_ShaderID));
 }
 
-struct ShaderSource
-{
-	::std::string VertexSource;
-	::std::string FragmentSource;
-};
-
-static ShaderSource ParseShader(const std::string& filepath)
+ShaderSource Shader::ParseShader(const std::string& filepath)
 {
 	::std::ifstream stream(filepath);
 	enum class ShaderType
@@ -53,7 +41,7 @@ static ShaderSource ParseShader(const std::string& filepath)
 	return { ss[0].str(), ss[1].str() };
 }
 
-static unsigned int CompileShader(unsigned int type, const std::string& source)
+unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 {
 	GLCall(unsigned int id = glCreateShader(type));
 	const char* src = source.c_str();
@@ -77,7 +65,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
 	return id;
 }
 
-static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
+unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
 	GLCall(unsigned int shaderProgram = glCreateProgram());
 	unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
@@ -113,8 +101,17 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
 		GLCall(glDeleteProgram(shaderProgram));
 		return 0;
 	}
-	GLCall(glUseProgram(shaderProgram));
 	GLCall(glDeleteShader(vs));
 	GLCall(glDeleteShader(fs));
 	return shaderProgram;
+}
+
+void Shader::Bind() const
+{
+	GLCall(glUseProgram(m_ShaderID));
+}
+
+void Shader::Unbind() const
+{
+	GLCall(glUseProgram(0));
 }

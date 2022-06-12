@@ -99,6 +99,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\Application.h" />
+    <ClInclude Include="src\include\GLCall.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\Basic.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
