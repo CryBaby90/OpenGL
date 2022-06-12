@@ -102,7 +102,9 @@
     <ClInclude Include="src\include\GLCall.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\Basic.shader" />
+    <None Include="res\shaders\Fragment2.Fshader" />
+    <None Include="res\shaders\Fragment.Fshader" />
+    <None Include="res\shaders\Vertex.Vshader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

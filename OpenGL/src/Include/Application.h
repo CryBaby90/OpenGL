@@ -9,13 +9,13 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    GLCall(glViewport(0, 0, width, height));
+	GLCall(glViewport(0, 0, width, height));
 }
 
 void processInput(GLFWwindow* window)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
 }
 
 struct ShaderSource
@@ -24,30 +24,47 @@ struct ShaderSource
 	::std::string FragmentSource;
 };
 
-static ShaderSource ParseShader(const std::string& filepath)
+static ShaderSource ParseShader(const std::string& vertexFilepath, const std::string& fragmentFilepath)
 {
-	::std::ifstream stream(filepath);
 	enum class ShaderType
 	{
 		NONE = -1,
 		VERTEX = 0,
 		FRAGMENT = 1,
 	};
-
 	std::string line;
 	std::stringstream ss[2];
 	ShaderType type = ShaderType::NONE;
-	while (getline(stream, line))
+
 	{
-		if (line.find("#shader") != ::std::string::npos)
+		::std::ifstream stream(vertexFilepath);
+		while (getline(stream, line))
 		{
-			if (line.find("vertex") != ::std::string::npos)
-				type = ShaderType::VERTEX;
-			else if (line.find("fragment") != ::std::string::npos)
-				type = ShaderType::FRAGMENT;
+			if (line.find("#shader") != ::std::string::npos)
+			{
+				if (line.find("vertex") != ::std::string::npos)
+					type = ShaderType::VERTEX;
+				else if (line.find("fragment") != ::std::string::npos)
+					type = ShaderType::FRAGMENT;
+			}
+			else
+				ss[(int)type] << line << "\n";
 		}
-		else
-			ss[(int)type] << line << "\n";
+	}
+	{
+		::std::ifstream stream(fragmentFilepath);
+		while (getline(stream, line))
+		{
+			if (line.find("#shader") != ::std::string::npos)
+			{
+				if (line.find("vertex") != ::std::string::npos)
+					type = ShaderType::VERTEX;
+				else if (line.find("fragment") != ::std::string::npos)
+					type = ShaderType::FRAGMENT;
+			}
+			else
+				ss[(int)type] << line << "\n";
+		}
 	}
 
 	return { ss[0].str(), ss[1].str() };

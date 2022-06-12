@@ -31,6 +31,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\Basic.shader" />
+    <None Include="res\shaders\Vertex.Vshader" />
+    <None Include="res\shaders\Fragment.Fshader" />
+    <None Include="res\shaders\Fragment2.Fshader" />
   </ItemGroup>
 </Project>
