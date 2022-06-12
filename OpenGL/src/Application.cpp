@@ -6,6 +6,9 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
     
     //创建window
@@ -32,7 +35,7 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     //在上下文之后
-    GLfloat vertices[] = {
+    /*GLfloat vertices[] = {
         0.5f, 0.5f, 0.0f,   // 右上角
         0.5f, -0.5f, 0.0f,  // 右下角
         -0.5f, -0.5f, 0.0f, // 左下角
@@ -45,8 +48,26 @@ int main()
         // 这样可以由下标代表顶点组合成矩形
         0, 1, 3, // 第一个三角形
         1, 2, 3  // 第二个三角形
-    };
+    };*/
 
+#pragma region 绘制两个彼此相连的三角形
+    /* 
+    GLfloat vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.0f, 0.0f,
+
+        0.5f, 0.5f, 0.0f,
+        -0.5f, 0.5f, 0.0f,
+    };
+    //glDrawArrays(GL_TRIANGLES, 0, 6);
+    GLuint indices[] = {
+        0, 1, 2, // 第一个三角形
+        2, 3, 4  // 第二个三角形
+    };*/
+#pragma endregion
+
+    /*
     //  创建VAO, VBO, EBO
     GLuint VAO, VBO, EBO;
     GLCall(glGenVertexArrays(1, &VAO));
@@ -78,7 +99,49 @@ int main()
     GLCall(glEnableVertexAttribArray(0));
     
     //  解绑VAO  之前不要解绑VBO EBO 否则要重新绑定
+    GLCall(glBindVertexArray(0));*/
+
+#pragma region 使用不同的VAO和VBO
+    GLfloat vertices_1[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.0f, 0.0f,
+
+    };
+    GLfloat vertices_2[] = {
+        0.0f,  0.0f, 0.0f,
+        0.5f, 0.5f, 0.0f,
+        -0.5f, 0.5f, 0.0f,
+    };
+
+    GLuint indices[] = {
+        0, 1, 2,
+    };
+
+    GLuint VAOs[2], VBOs[2], EBO;
+    GLCall(glGenVertexArrays(2, VAOs));
+    GLCall(glGenBuffers(2, VBOs));
+    GLCall(glGenBuffers(1, &EBO));
+
+    GLCall(glBindVertexArray(VAOs[0]));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_1), vertices_1, GL_STATIC_DRAW));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+    GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
+    GLCall(glEnableVertexAttribArray(0));
+
+    GLCall(glBindVertexArray(VAOs[1]));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_2), vertices_2, GL_STATIC_DRAW));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+    GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
+    GLCall(glEnableVertexAttribArray(0));
+
     GLCall(glBindVertexArray(0));
+#pragma endregion
+
 
     //6  着色器程序
     /*Shader shader("res/shaders/Basic.shader");
@@ -106,8 +169,10 @@ int main()
         
         //  绘制物体
         GLCall(glUseProgram(shaderProgram));
-        GLCall(glBindVertexArray(VAO));
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+        GLCall(glBindVertexArray(VAOs[0]));//三角形1
+        GLCall(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0)); 
+        GLCall(glBindVertexArray(VAOs[1]));//三角形2
+        GLCall(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0));
 
         GLCall(glBindVertexArray(0));
 
@@ -117,8 +182,8 @@ int main()
     }
 
     //资源释放
-    GLCall(glDeleteVertexArrays(1, &VAO));
-    GLCall(glDeleteBuffers(1, &VBO));
+    GLCall(glDeleteVertexArrays(2, VAOs));
+    GLCall(glDeleteBuffers(2, VBOs));
     GLCall(glDeleteBuffers(1, &EBO));
     GLCall(glDeleteProgram(shaderProgram));
 
