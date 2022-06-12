@@ -17,6 +17,7 @@ private:
 	::std::string m_VertexFilepath;
 	::std::string m_FragmentFilepath;
 public:
+	Shader();
 	Shader(const std::string& vertexFilepath, const std::string& fragmentFilepath);
 	~Shader();
 
