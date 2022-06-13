@@ -92,5 +92,5 @@ void test::TestShaderPart::OnRender()
 
 void test::TestShaderPart::OnImGuiRender()
 {
-	ImGui::SliderFloat("Translation A", &m_Offset_x, -0.5f, 0.5f);
+	ImGui::SliderFloat("Offset_x", &m_Offset_x, -0.5f, 0.5f);
 }

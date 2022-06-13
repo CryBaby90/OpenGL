@@ -3,17 +3,18 @@
 #include "Shader.h"
 
 #include <stb_image/stb_image.h>
+#include <imgui/imgui.h>
 
 test::TestTexture::TestTexture()
-	:m_Shader(nullptr)
+	:m_Shader(nullptr), m_MixValue(0)
 {
 	//在上下文之后
 	GLfloat vertices[] = {
 		//     ---- 位置 ----          - 纹理坐标 -
-	 0.5f,  0.5f, 0.0f,					1.0f, 1.0f,   // 右上
-	 0.5f, -0.5f, 0.0f,				    1.0f, 0.0f,   // 右下
+	 0.5f,  0.5f, 0.0f,					2.0f, 2.0f,   // 右上
+	 0.5f, -0.5f, 0.0f,				    2.0f, 0.0f,   // 右下
 	-0.5f, -0.5f, 0.0f,					0.0f, 0.0f,   // 左下
-	-0.5f,  0.5f, 0.0f,					0.0f, 1.0f    // 左上
+	-0.5f,  0.5f, 0.0f,					0.0f, 2.0f    // 左上
 	};
 
 	GLuint indices[] = {
@@ -66,8 +67,8 @@ test::TestTexture::TestTexture()
 	GLCall(glGenTextures(1, &m_TextureID1));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID1));
 	// 为当前绑定的纹理对象设置环绕、过滤方式
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	//加载并生成纹理
@@ -122,11 +123,17 @@ void test::TestTexture::OnUpdate(float deltaTime)
 void test::TestTexture::OnRender()
 {
 	//  绘制物体
+	//为图片设置插槽（纹理单元）
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID1));
 	GLCall(glActiveTexture(GL_TEXTURE1));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID2));
+	//先use shader
 	m_Shader->Bind();
+	//给shader里的变量指定插槽
+	m_Shader->SetUniform1i("texture1", 0);
+	m_Shader->SetUniform1i("texture2", 1);
+	m_Shader->SetUniform1f("mixValue", m_MixValue);
 	GLCall(glBindVertexArray(m_VAO));
 	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
@@ -135,4 +142,5 @@ void test::TestTexture::OnRender()
 
 void test::TestTexture::OnImGuiRender()
 {
+	ImGui::SliderFloat("MixValue", &m_MixValue, 0.0f, 1.0f);
 }
