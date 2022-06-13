@@ -63,6 +63,12 @@
     <ClCompile Include="src\test\TestShaderPart.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\vendor\stb_image\stb_image.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\TestTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\GLCall.h">
@@ -957,6 +963,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\test\TestShaderPart.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\stb_image\stb_image.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\TestTexture.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
