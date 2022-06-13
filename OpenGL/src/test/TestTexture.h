@@ -16,5 +16,6 @@ namespace test
 	private:
 		Shader* m_Shader;
 		GLuint m_VAO, m_VBO, m_EBO;
+		GLuint m_TextureID1, m_TextureID2;
 	};
 }

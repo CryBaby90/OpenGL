@@ -63,9 +63,8 @@ test::TestTexture::TestTexture()
 	m_Shader = new Shader("res/shaders/Texture/Vertex.Vshader", "res/shaders/Texture/Fragment.Fshader");
 
 	//7	纹理
-	GLuint textureID;
-	GLCall(glGenTextures(1, &textureID));
-	GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
+	GLCall(glGenTextures(1, &m_TextureID1));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID1));
 	// 为当前绑定的纹理对象设置环绕、过滤方式
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
@@ -73,6 +72,7 @@ test::TestTexture::TestTexture()
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	//加载并生成纹理
 	GLint width, height, nrChannels;
+	stbi_set_flip_vertically_on_load(true);
 	unsigned char* textureData = stbi_load("res/textures/container.jpg", &width, &height, &nrChannels, 0);
 	if (textureData)
 	{
@@ -81,7 +81,27 @@ test::TestTexture::TestTexture()
 	}
 	else
 	{
-		std::cout << "Failed to load texture" << std::endl;
+		std::cout << "Failed to load texture1" << std::endl;
+	}
+	stbi_image_free(textureData);
+
+	GLCall(glGenTextures(1, &m_TextureID2));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID2));
+	// 为当前绑定的纹理对象设置环绕、过滤方式
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+	textureData = stbi_load("res/textures/awesomeface.png", &width, &height, &nrChannels, 0);
+	if (textureData)
+	{
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData));
+		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
+	}
+	else
+	{
+		std::cout << "Failed to load texture1" << std::endl;
 	}
 	stbi_image_free(textureData);
 }
@@ -102,6 +122,10 @@ void test::TestTexture::OnUpdate(float deltaTime)
 void test::TestTexture::OnRender()
 {
 	//  绘制物体
+	GLCall(glActiveTexture(GL_TEXTURE0));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID1));
+	GLCall(glActiveTexture(GL_TEXTURE1));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID2));
 	m_Shader->Bind();
 	GLCall(glBindVertexArray(m_VAO));
 	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
