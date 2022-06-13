@@ -3,9 +3,10 @@
 #include "Shader.h"
 
 #include <glm/glm.hpp>
+#include <imgui/imgui.h>
 
 test::TestShaderPart::TestShaderPart()
-	:m_Shader(nullptr)
+	:m_Shader(nullptr), m_Offset_x(0)
 {
 	//在上下文之后
 	GLfloat vertices[] = {
@@ -81,6 +82,7 @@ void test::TestShaderPart::OnRender()
 	m_Shader->Bind(); //先glUseProgram
 	float timeValue = glfwGetTime();
 	float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+	m_Shader->SetUniform1f("offset_x", m_Offset_x);
 	m_Shader->SetUniforms4f("ourColor", ::glm::vec4(0.0f, greenValue, 0.0f, 1.0f));
 	GLCall(glBindVertexArray(m_VAO));
 	GLCall(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0));
@@ -90,4 +92,5 @@ void test::TestShaderPart::OnRender()
 
 void test::TestShaderPart::OnImGuiRender()
 {
+	ImGui::SliderFloat("Translation A", &m_Offset_x, -0.5f, 0.5f);
 }

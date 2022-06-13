@@ -16,5 +16,6 @@ namespace test
 	private:
 		Shader* m_Shader;
 		GLuint m_VAO, m_VBO, m_EBO;
+		float m_Offset_x;
 	};
 }
