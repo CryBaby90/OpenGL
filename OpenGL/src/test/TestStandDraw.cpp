@@ -54,7 +54,7 @@ test::TestStandDraw::TestStandDraw()
 	GLCall(glBindVertexArray(0));
 
 	//6  ×ÅÉ«Æ÷³ÌĞò
-	m_Shader = new Shader("res/shaders/Vertex.Vshader", "res/shaders/Fragment.Fshader");
+	m_Shader = new Shader("res/shaders/StandDraw/Vertex.Vshader", "res/shaders/StandDraw/Fragment.Fshader");
 }
 
 test::TestStandDraw::~TestStandDraw()

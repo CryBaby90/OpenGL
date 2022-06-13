@@ -4,7 +4,8 @@
 
 #include "Application.h"
 #include "test/TestClearColor.h"
-#include "test//TestStandDraw.h"
+#include "test/TestStandDraw.h"
+#include "test/TestShaderPart.h"
 
 int main()
 {
@@ -69,6 +70,11 @@ int main()
 	currentTest = testMenu;
 	testMenu->RegisterTest<::test::TestClearColor>("Clear Color");
 	testMenu->RegisterTest<::test::TestStandDraw>("Stand Draw");
+	testMenu->RegisterTest<::test::TestShaderPart>("Shader");
+
+	int nrAttributes;
+	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 
 	//äÖÈ¾Ñ­»·
 	while (!glfwWindowShouldClose(window))
