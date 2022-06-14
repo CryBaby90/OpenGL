@@ -8,9 +8,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <cmath>
+
 test::TestMatrix::TestMatrix()
 	:m_Shader(nullptr), m_MixValue(0.2f), m_Trans(glm::mat4(1.0f)), 
-	m_Rotate(0.0f), m_Scale(1.0f, 1.0f, 1.0f)
+	m_Rotate(0.0f), m_Scale(0.0f, 0.0f, 1.0f)
 {
 	//在上下文之后
 	GLfloat vertices[] = {
@@ -129,6 +131,10 @@ test::TestMatrix::TestMatrix()
 	std::cout << "x" << vec.x << std::endl;
 	std::cout << "y" << vec.y << std::endl;
 	std::cout << "z" << vec.z << std::endl;
+
+	//记住，实际的变换顺序应该与阅读顺序相反：实际的变换是先应用旋转再是位移的。
+	m_Trans = glm::rotate(m_Trans, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	m_Trans = glm::translate(m_Trans, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
 test::TestMatrix::~TestMatrix()
@@ -142,12 +148,17 @@ test::TestMatrix::~TestMatrix()
 
 void test::TestMatrix::OnUpdate(float deltaTime)
 {
-	m_Trans = glm::rotate(m_Trans, glm::radians(m_Rotate), glm::vec3(0.0, 0.0, 1.0));
-	m_Trans = glm::scale(m_Trans, m_Scale);
+	//m_Trans = glm::rotate(m_Trans, glm::radians(m_Rotate), m_Scale);
+	//m_Trans = glm::scale(m_Trans, m_Scale);
 }
 
 void test::TestMatrix::OnRender()
 {
+	m_Trans = glm::mat4(1.0f);
+	m_Trans = glm::rotate(m_Trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+	m_Trans = glm::translate(m_Trans, glm::vec3(0.5f, -0.5f, 0.0f));
+	
+
 	//  绘制物体
 	//为图片设置插槽（纹理单元）
 	GLCall(glActiveTexture(GL_TEXTURE0));
@@ -162,6 +173,18 @@ void test::TestMatrix::OnRender()
 	m_Shader->SetUniform1f("mixValue", m_MixValue);
 	m_Shader->SetUniformsMat4f("transform", m_Trans);
 	GLCall(glBindVertexArray(m_VAO));
+	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+
+	m_Trans = glm::mat4(1.0f); //重置矩阵
+	m_Trans = glm::translate(m_Trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+	float scaleAmount = fabs(static_cast<float>(sin(glfwGetTime())));
+	m_Trans = glm::scale(m_Trans, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
+	m_Shader->SetUniformsMat4f("transform", m_Trans);
+	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+
+	m_Trans = glm::mat4(1.0f); //重置矩阵
+	m_Trans = glm::scale(m_Trans, glm::vec3(0.3f, 0.3f, 0.3f));
+	m_Shader->SetUniformsMat4f("transform", m_Trans);
 	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
 	GLCall(glBindVertexArray(0));
