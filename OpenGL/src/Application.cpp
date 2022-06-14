@@ -62,7 +62,7 @@ int main()
 	//ImGui::StyleColorsClassic();
 
 	// …Ë÷√ ImGui Platform/Renderer backends
-	const char* glsl_version = "#version 130";
+	const char* glsl_version = "#version 330";
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
@@ -120,7 +120,6 @@ int main()
 	delete currentTest;
 	if (currentTest != testMenu)
 		delete testMenu;
-
 
 	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown();
