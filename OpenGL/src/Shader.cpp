@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <fstream>
 #include <sstream>
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::Shader()
 {
@@ -174,12 +175,12 @@ void Shader::SetUniforms4f(const std::string& name, const glm::vec4& value)
 
 void Shader::SetUniformsMat3f(const std::string& name, const glm::mat3& matrix)
 {
-	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
+	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix)));
 }
 
 void Shader::SetUniformsMat4f(const std::string& name, const glm::mat4& matrix)
 {
-	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
+	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix)));
 }
 
 int Shader::GetUniformLocation(const std::string& name) const

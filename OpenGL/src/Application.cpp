@@ -7,6 +7,7 @@
 #include "test/TestStandDraw.h"
 #include "test/TestShaderPart.h"
 #include "test/TestTexture.h"
+#include "test/TestMatrix.h"
 
 int main()
 {
@@ -73,6 +74,7 @@ int main()
 	testMenu->RegisterTest<::test::TestStandDraw>("Stand Draw");
 	testMenu->RegisterTest<::test::TestShaderPart>("Shader");
 	testMenu->RegisterTest<::test::TestTexture>("Texture");
+	testMenu->RegisterTest<::test::TestMatrix>("Matrix");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
