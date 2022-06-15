@@ -12,7 +12,7 @@ namespace test
 		TestCamera();
 		~TestCamera();
 
-		void OnProcessInput(GLFWwindow* window) override;
+		void OnProcessInput(GLFWwindow* window, GLfloat deltaTime) override;
 		void OnUpdate(float deltaTime) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
@@ -20,9 +20,9 @@ namespace test
 		Shader* m_Shader;
 		GLuint m_VAO, m_VBO, m_EBO;
 		GLuint m_TextureID1, m_TextureID2;
-		GLfloat m_MixValue;
+		GLfloat m_MixValue, m_CameraSpeed;
 		glm::mat4 m_Model, m_View, m_Proj;
 		glm::vec3* m_CubePositions;
-		glm::vec3 m_ViewPos;
+		glm::vec3 m_CameraPos, m_CameraFront, m_CameraUp;
 	};
 }

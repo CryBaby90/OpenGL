@@ -14,7 +14,7 @@ namespace test
 		Test() {}
 		virtual ~Test() {}
 
-		virtual void OnProcessInput(GLFWwindow* window) {}
+		virtual void OnProcessInput(GLFWwindow* window, GLfloat deltaTime) {}
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}	

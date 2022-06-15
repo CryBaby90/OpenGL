@@ -84,9 +84,16 @@ int main()
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 
+	GLfloat deltaTime = 0.0f; // 当前帧与上一帧的时间差
+	GLfloat lastFrame = 0.0f; // 上一帧的时间
+
 	//渲染循环
 	while (!glfwWindowShouldClose(window))
 	{
+		GLfloat currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		//输入
 		processInput(window);
 
@@ -102,7 +109,8 @@ int main()
 		//ImGui
 		if (currentTest)
 		{
-			currentTest->OnUpdate((float)glfwGetTime());
+			currentTest->OnProcessInput(window, deltaTime);
+			currentTest->OnUpdate(deltaTime);
 			currentTest->OnRender();
 			ImGui::Begin("Test");
 			if (currentTest != testMenu && ImGui::Button("<-"))

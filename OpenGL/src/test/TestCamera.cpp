@@ -6,9 +6,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 test::TestCamera::TestCamera()
-	:m_Shader(nullptr), m_MixValue(0.2f), 
+	:m_Shader(nullptr), m_MixValue(0.2f), m_CameraSpeed(2.5f),
 	m_Model(glm::mat4(1.0f)), m_View(glm::mat4(1.0f)), m_Proj(glm::mat4(1.0f)),
-	m_CubePositions(nullptr), m_ViewPos(0.0f, 0.0f, -3.0f)
+	m_CubePositions(nullptr), m_CameraPos(0.0f, 0.0f, 5.0f), m_CameraFront(0.0f, 0.0f, -1.0f), m_CameraUp(0.0f, 1.0f, 0.0f)
 {
 	//在上下文之后
 	GLfloat vertices[] = {
@@ -161,7 +161,7 @@ test::TestCamera::TestCamera()
 	m_Model = glm::rotate(m_Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	//观察矩阵
 	// 注意，我们将矩阵向我们要进行移动场景的反方向移动。
-	m_View = glm::translate(m_View, m_ViewPos);
+	m_View = glm::translate(m_View, glm::vec3(0.0f, 0.0f, -3.0f));
 	//投影矩阵
 	m_Proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
@@ -213,9 +213,16 @@ test::TestCamera::~TestCamera()
 	GLCall(glDeleteBuffers(1, &m_EBO));
 }
 
-void test::TestCamera::OnProcessInput(GLFWwindow* window)
+void test::TestCamera::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
 {
-
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		m_CameraPos += m_CameraSpeed * m_CameraFront * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		m_CameraPos -= m_CameraSpeed * m_CameraFront * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		m_CameraPos -= glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * m_CameraSpeed * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		m_CameraPos += glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * m_CameraSpeed * deltaTime;
 }
 
 void test::TestCamera::OnUpdate(float deltaTime)
@@ -223,12 +230,14 @@ void test::TestCamera::OnUpdate(float deltaTime)
 	m_Model = glm::mat4(1.0f);
 	m_Model = glm::rotate(m_Model, deltaTime * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
-	m_View = glm::mat4(1.0f);
-	//m_View = glm::translate(m_View, m_ViewPos);
+	/*m_View = glm::mat4(1.0f);
 	float radius = 10.0f;
 	float camX = sin(glfwGetTime()) * radius;
 	float camZ = cos(glfwGetTime()) * radius;
-	m_View = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+	m_View = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));*/
+
+	m_View = glm::mat4(1.0f);
+	m_View = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
 }
 
 void test::TestCamera::OnRender()
@@ -272,5 +281,6 @@ void test::TestCamera::OnRender()
 void test::TestCamera::OnImGuiRender()
 {
 	ImGui::SliderFloat("MixValue", &m_MixValue, 0.0f, 1.0f);
-	ImGui::SliderFloat3("ViewPos", &m_ViewPos.x, -6.0f, 6.0f);
+	ImGui::SliderFloat3("CameraPos", &m_CameraPos.x, -30, 30);
+	ImGui::InputFloat("CameraSpeed", &m_CameraSpeed);
 }
