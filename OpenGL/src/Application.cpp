@@ -9,6 +9,7 @@
 #include "test/TestTexture.h"
 #include "test/TestMatrix.h"
 #include "test/TestCoordinate.h"
+#include "test/TestCamera.h"
 
 int main()
 {
@@ -77,6 +78,7 @@ int main()
 	testMenu->RegisterTest<::test::TestTexture>("Texture");
 	testMenu->RegisterTest<::test::TestMatrix>("Matrix");
 	testMenu->RegisterTest<::test::TestCoordinate>("TestCoordinate");
+	testMenu->RegisterTest<::test::TestCamera>("Camera");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);

@@ -1,6 +1,4 @@
 #include "TestStandDraw.h"
-#include "GLCall.h"
-#include "Shader.h"
 
 test::TestStandDraw::TestStandDraw()
 	:m_Shader(nullptr)

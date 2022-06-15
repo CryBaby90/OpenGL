@@ -1,4 +1,7 @@
 #pragma once
+#include "GLCall.h"
+
+#include <imgui/imgui.h>
 #include <iostream>
 #include <vector>
 #include <functional>
@@ -11,9 +14,10 @@ namespace test
 		Test() {}
 		virtual ~Test() {}
 
+		virtual void OnProcessInput(GLFWwindow* window) {}
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
-		virtual void OnImGuiRender() {}
+		virtual void OnImGuiRender() {}	
 	};
 
 	class TestMenu : public Test

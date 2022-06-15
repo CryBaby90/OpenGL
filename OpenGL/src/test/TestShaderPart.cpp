@@ -1,9 +1,6 @@
 #include "TestShaderPart.h"
-#include "GLCall.h"
-#include "Shader.h"
 
 #include <glm/glm.hpp>
-#include <imgui/imgui.h>
 
 test::TestShaderPart::TestShaderPart()
 	:m_Shader(nullptr), m_Offset_x(0)

@@ -1,17 +1,59 @@
-#include "TestTexture.h"
+#include "TestCamera.h"
 
 #include <stb_image/stb_image.h>
 
-test::TestTexture::TestTexture()
-	:m_Shader(nullptr), m_MixValue(0)
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+test::TestCamera::TestCamera()
+	:m_Shader(nullptr), m_MixValue(0.2f), 
+	m_Model(glm::mat4(1.0f)), m_View(glm::mat4(1.0f)), m_Proj(glm::mat4(1.0f)),
+	m_CubePositions(nullptr), m_ViewPos(0.0f, 0.0f, -3.0f)
 {
 	//在上下文之后
 	GLfloat vertices[] = {
 		//     ---- 位置 ----          - 纹理坐标 -
-	 0.5f,  0.5f, 0.0f,					2.0f, 2.0f,   // 右上
-	 0.5f, -0.5f, 0.0f,				    2.0f, 0.0f,   // 右下
-	-0.5f, -0.5f, 0.0f,					0.0f, 0.0f,   // 左下
-	-0.5f,  0.5f, 0.0f,					0.0f, 2.0f    // 左上
+	 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
 	GLuint indices[] = {
@@ -58,7 +100,7 @@ test::TestTexture::TestTexture()
 	GLCall(glBindVertexArray(0));
 
 	//6  着色器程序
-	m_Shader = new Shader("res/shaders/Texture/Vertex.Vshader", "res/shaders/Texture/Fragment.Fshader");
+	m_Shader = new Shader("res/shaders/Camera/Vertex.Vshader", "res/shaders/Camera/Fragment.Fshader");
 
 	//7	纹理
 	GLCall(glGenTextures(1, &m_TextureID1));
@@ -70,8 +112,8 @@ test::TestTexture::TestTexture()
 	//GL_CLAMP_TO_BORDER	超出的坐标为用户指定的边缘颜色。
 	//如果用GL_CLAMP_TO_BORDER 需要指定边缘颜色：float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 	//											glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 	//GL_NEAREST				邻近过滤 会选择中心点最接近纹理坐标的那个像素
 	//GL_LINEAR					线性过滤 它会基于纹理坐标附近的纹理像素，计算出一个插值，近似出这些纹理像素之间的颜色
 	//GL_NEAREST_MIPMAP_NEAREST	使用最邻近的多级渐远纹理来匹配像素大小，并使用邻近插值进行纹理采样
@@ -98,8 +140,8 @@ test::TestTexture::TestTexture()
 	GLCall(glGenTextures(1, &m_TextureID2));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID2));
 	// 为当前绑定的纹理对象设置环绕、过滤方式
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
@@ -114,23 +156,86 @@ test::TestTexture::TestTexture()
 		std::cout << "Failed to load texture1" << std::endl;
 	}
 	stbi_image_free(textureData);
+
+	//模型矩阵
+	m_Model = glm::rotate(m_Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//观察矩阵
+	// 注意，我们将矩阵向我们要进行移动场景的反方向移动。
+	m_View = glm::translate(m_View, m_ViewPos);
+	//投影矩阵
+	m_Proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+	//开启z-buffer
+	GLCall(glEnable(GL_DEPTH_TEST));
+
+	m_CubePositions = new glm::vec3[]{
+		//glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
+
+	//构建摄像机空间坐标
+	//摄像机位置
+	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+	//原点
+	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+	//方向向量
+	glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+	//右轴
+	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+	//上轴
+	glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+
+	//构建LookAt矩阵
+	glm::mat4 view(glm::mat4(1.0f));
+	view = glm::lookAt(
+		glm::vec3(0.0f, 0.0f, 0.3f),//位置
+		glm::vec3(0.0f, 0.0f, 0.0f),//目标
+		glm::vec3(0.0f, 1.0f, 0.0f)//上向量
+	);
 }
 
-test::TestTexture::~TestTexture()
+test::TestCamera::~TestCamera()
 {
 	//资源释放
 	delete m_Shader;
+	delete m_CubePositions;
 	GLCall(glDeleteVertexArrays(1, &m_VAO));
 	GLCall(glDeleteBuffers(1, &m_VBO));
 	GLCall(glDeleteBuffers(1, &m_EBO));
 }
 
-void test::TestTexture::OnUpdate(float deltaTime)
+void test::TestCamera::OnProcessInput(GLFWwindow* window)
 {
+
 }
 
-void test::TestTexture::OnRender()
+void test::TestCamera::OnUpdate(float deltaTime)
 {
+	m_Model = glm::mat4(1.0f);
+	m_Model = glm::rotate(m_Model, deltaTime * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+
+	m_View = glm::mat4(1.0f);
+	//m_View = glm::translate(m_View, m_ViewPos);
+	float radius = 10.0f;
+	float camX = sin(glfwGetTime()) * radius;
+	float camZ = cos(glfwGetTime()) * radius;
+	m_View = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+}
+
+void test::TestCamera::OnRender()
+{
+	//每次渲染迭代前清除之前的深度缓存
+	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
 	//  绘制物体
 	//为图片设置插槽（纹理单元）
 	GLCall(glActiveTexture(GL_TEXTURE0));
@@ -143,13 +248,29 @@ void test::TestTexture::OnRender()
 	m_Shader->SetUniform1i("texture1", 0);
 	m_Shader->SetUniform1i("texture2", 1);
 	m_Shader->SetUniform1f("mixValue", m_MixValue);
+	m_Shader->SetUniformsMat4f("model", m_Model);
+	m_Shader->SetUniformsMat4f("view", m_View);
+	m_Shader->SetUniformsMat4f("proj", m_Proj);
 	GLCall(glBindVertexArray(m_VAO));
-	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+	//GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, 36)); //没有设置index pos  暂时用glDrawArrays
+	for (unsigned int i = 0; i < 10; i++)
+	{
+		glm::mat4 model(glm::mat4(1.0f));
+		model = glm::translate(model, m_CubePositions[i]);
+		float angle = 20.0f * i;
+		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+		model = glm::rotate(model, glm::radians((float)glfwGetTime() * 10), glm::vec3(1.0f, 0.3f, 0.5f));
+		m_Shader->SetUniformsMat4f("model", model);
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
 
 	GLCall(glBindVertexArray(0));
 }
 
-void test::TestTexture::OnImGuiRender()
+void test::TestCamera::OnImGuiRender()
 {
 	ImGui::SliderFloat("MixValue", &m_MixValue, 0.0f, 1.0f);
+	ImGui::SliderFloat3("ViewPos", &m_ViewPos.x, -6.0f, 6.0f);
 }

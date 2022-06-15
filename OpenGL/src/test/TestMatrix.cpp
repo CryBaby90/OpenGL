@@ -1,9 +1,6 @@
 #include "TestMatrix.h"
-#include "GLCall.h"
-#include "Shader.h"
 
 #include <stb_image/stb_image.h>
-#include <imgui/imgui.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>

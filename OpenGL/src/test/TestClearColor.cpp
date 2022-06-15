@@ -1,6 +1,4 @@
 #include "TestClearColor.h"
-#include "GLCall.h"
-#include "imgui/imgui.h"
 
 namespace test
 {

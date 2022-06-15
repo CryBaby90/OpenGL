@@ -1,9 +1,6 @@
 #include "TestCoordinate.h"
-#include "GLCall.h"
-#include "Shader.h"
 
 #include <stb_image/stb_image.h>
-#include <imgui/imgui.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -163,6 +160,7 @@ test::TestCoordinate::TestCoordinate()
 	//模型矩阵
 	m_Model = glm::rotate(m_Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	//观察矩阵
+	// 注意，我们将矩阵向我们要进行移动场景的反方向移动。
 	m_View = glm::translate(m_View, m_ViewPos);
 	//投影矩阵
 	m_Proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
