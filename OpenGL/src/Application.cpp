@@ -23,7 +23,7 @@ int main()
 
 
 	//创建window
-	GLFWwindow* window = glfwCreateWindow(800, 600, "MyOpenGL", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "MyOpenGL", NULL, NULL);
 	if (!window)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -44,9 +44,14 @@ int main()
 	}
 
 	//创建渲染窗口
-	GLCall(glViewport(0, 0, 800, 600));
+	GLCall(glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT));
 	//拖拽回调 改变渲染窗口大小
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	//设置鼠标光标
+	if (showCursor)
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	else
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	//线框模式
 	//GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
@@ -69,8 +74,9 @@ int main()
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
-	::test::Test* currentTest = nullptr;
-	::test::TestMenu* testMenu = new test::TestMenu(currentTest);
+	GLCall(glfwSetCursorPosCallback(window, mouse_callback)); //因为回调调用了 ImGUI
+	GLCall(glfwSetScrollCallback(window, scroll_callback));
+
 	currentTest = testMenu;
 	testMenu->RegisterTest<::test::TestClearColor>("Clear Color");
 	testMenu->RegisterTest<::test::TestStandDraw>("Stand Draw");
@@ -90,7 +96,7 @@ int main()
 	//渲染循环
 	while (!glfwWindowShouldClose(window))
 	{
-		GLfloat currentFrame = glfwGetTime();
+		GLfloat currentFrame = static_cast<GLfloat>(glfwGetTime());
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 

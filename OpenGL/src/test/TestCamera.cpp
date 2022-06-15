@@ -213,6 +213,42 @@ test::TestCamera::~TestCamera()
 	GLCall(glDeleteBuffers(1, &m_EBO));
 }
 
+void test::TestCamera::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean constrainPitch)
+{
+	Yaw += xoffset;
+	Pitch += yoffset;
+
+	// make sure that when pitch is out of bounds, screen doesn't get flipped
+	if (constrainPitch)
+	{
+		if (Pitch > 89.0f)
+			Pitch = 89.0f;
+		if (Pitch < -89.0f)
+			Pitch = -89.0f;
+	}
+
+	glm::vec3 front;
+	//ÉèÖÃdirection
+	front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+	front.y = sin(glm::radians(Pitch));
+	front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+	m_CameraFront = glm::normalize(front);
+	glm::vec3 Right = glm::normalize(glm::cross(m_CameraFront, glm::vec3(0.0f, 1.0f, 0.0f)));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+	m_CameraUp = glm::normalize(glm::cross(Right, m_CameraFront));
+}
+
+void test::TestCamera::OnScroll(GLfloat xoffset, GLfloat yoffset)
+{
+	if (fov >= 1.0f && fov <= 45.0f)
+		fov -= yoffset;
+	if (fov <= 1.0f)
+		fov = 1.0f;
+	if (fov >= 45.0f)
+		fov = 45.0f;
+
+	m_Proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
+}
+
 void test::TestCamera::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
