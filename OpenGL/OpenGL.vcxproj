@@ -99,6 +99,7 @@
     <ClCompile Include="src\GLCall.cpp" />
     <ClCompile Include="src\include\glad.c" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\test\TestCoordinate.cpp" />
     <ClCompile Include="src\test\TestMatrix.cpp" />
     <ClCompile Include="src\test\TestShaderPart.cpp" />
     <ClCompile Include="src\test\Test.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="src\include\Application.h" />
     <ClInclude Include="src\include\GLCall.h" />
     <ClInclude Include="src\include\Shader.h" />
+    <ClInclude Include="src\test\TestCoordinate.h" />
     <ClInclude Include="src\test\TestMatrix.h" />
     <ClInclude Include="src\test\TestShaderPart.h" />
     <ClInclude Include="src\test\Test.h" />

@@ -8,6 +8,7 @@
 #include "test/TestShaderPart.h"
 #include "test/TestTexture.h"
 #include "test/TestMatrix.h"
+#include "test/TestCoordinate.h"
 
 int main()
 {
@@ -75,6 +76,7 @@ int main()
 	testMenu->RegisterTest<::test::TestShaderPart>("Shader");
 	testMenu->RegisterTest<::test::TestTexture>("Texture");
 	testMenu->RegisterTest<::test::TestMatrix>("Matrix");
+	testMenu->RegisterTest<::test::TestCoordinate>("TestCoordinate");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -98,7 +100,7 @@ int main()
 		//ImGui
 		if (currentTest)
 		{
-			currentTest->OnUpdate(0.0f);
+			currentTest->OnUpdate((float)glfwGetTime());
 			currentTest->OnRender();
 			ImGui::Begin("Test");
 			if (currentTest != testMenu && ImGui::Button("<-"))

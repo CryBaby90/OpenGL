@@ -1,4 +1,4 @@
-#include "TestMatrix.h"
+#include "TestCoordinate.h"
 #include "GLCall.h"
 #include "Shader.h"
 
@@ -8,19 +8,55 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <cmath>
-
-test::TestMatrix::TestMatrix()
-	:m_Shader(nullptr), m_MixValue(0.2f), m_Trans(glm::mat4(1.0f)), 
-	m_Rotate(0.0f), m_Scale(0.0f, 0.0f, 1.0f)
+test::TestCoordinate::TestCoordinate()
+	:m_Shader(nullptr), m_MixValue(0.2f), 
+	m_Model(glm::mat4(1.0f)), m_View(glm::mat4(1.0f)), m_Proj(glm::mat4(1.0f)),
+	m_CubePositions(nullptr)
 {
 	//在上下文之后
 	GLfloat vertices[] = {
 		//     ---- 位置 ----          - 纹理坐标 -
-	 0.5f,  0.5f, 0.0f,					1.0f, 1.0f,   // 右上
-	 0.5f, -0.5f, 0.0f,				    1.0f, 0.0f,   // 右下
-	-0.5f, -0.5f, 0.0f,					0.0f, 0.0f,   // 左下
-	-0.5f,  0.5f, 0.0f,					0.0f, 1.0f    // 左上
+	 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
 	GLuint indices[] = {
@@ -67,7 +103,7 @@ test::TestMatrix::TestMatrix()
 	GLCall(glBindVertexArray(0));
 
 	//6  着色器程序
-	m_Shader = new Shader("res/shaders/Matrix/Vertex.Vshader", "res/shaders/Matrix/Fragment.Fshader");
+	m_Shader = new Shader("res/shaders/Coordinate/Vertex.Vshader", "res/shaders/Coordinate/Fragment.Fshader");
 
 	//7	纹理
 	GLCall(glGenTextures(1, &m_TextureID1));
@@ -124,40 +160,50 @@ test::TestMatrix::TestMatrix()
 	}
 	stbi_image_free(textureData);
 
-	glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-	glm::mat4 trans = glm::mat4(1.0f);
-	trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
-	vec = trans * vec;
-	std::cout << "x" << vec.x << std::endl;
-	std::cout << "y" << vec.y << std::endl;
-	std::cout << "z" << vec.z << std::endl;
+	//模型矩阵
+	m_Model = glm::rotate(m_Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//观察矩阵
+	m_View = glm::translate(m_View, glm::vec3(0.0f, 0.0f, -3.0f));
+	//投影矩阵
+	m_Proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-	//记住，实际的变换顺序应该与阅读顺序相反：实际的变换是先缩放，再应用旋转，最后是位移的。
-	m_Trans = glm::rotate(m_Trans, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	m_Trans = glm::translate(m_Trans, glm::vec3(1.0f, 0.0f, 0.0f));	
+	//开启z-buffer
+	GLCall(glEnable(GL_DEPTH_TEST));
+
+	m_CubePositions = new glm::vec3[]{
+		//glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
 }
 
-test::TestMatrix::~TestMatrix()
+test::TestCoordinate::~TestCoordinate()
 {
 	//资源释放
 	delete m_Shader;
+	delete m_CubePositions;
 	GLCall(glDeleteVertexArrays(1, &m_VAO));
 	GLCall(glDeleteBuffers(1, &m_VBO));
 	GLCall(glDeleteBuffers(1, &m_EBO));
 }
 
-void test::TestMatrix::OnUpdate(float deltaTime)
+void test::TestCoordinate::OnUpdate(float deltaTime)
 {
-	//m_Trans = glm::rotate(m_Trans, glm::radians(m_Rotate), m_Scale);
-	//m_Trans = glm::scale(m_Trans, m_Scale);
+	m_Model = glm::mat4(1.0f);
+	m_Model = glm::rotate(m_Model, deltaTime * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 }
 
-void test::TestMatrix::OnRender()
+void test::TestCoordinate::OnRender()
 {
-	m_Trans = glm::mat4(1.0f);
-	m_Trans = glm::rotate(m_Trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-	m_Trans = glm::translate(m_Trans, glm::vec3(0.5f, -0.5f, 0.0f));
-	
+	//每次渲染迭代前清除之前的深度缓存
+	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 	//  绘制物体
 	//为图片设置插槽（纹理单元）
@@ -171,28 +217,30 @@ void test::TestMatrix::OnRender()
 	m_Shader->SetUniform1i("texture1", 0);
 	m_Shader->SetUniform1i("texture2", 1);
 	m_Shader->SetUniform1f("mixValue", m_MixValue);
-	m_Shader->SetUniformsMat4f("transform", m_Trans);
+	m_Shader->SetUniformsMat4f("model", m_Model);
+	m_Shader->SetUniformsMat4f("view", m_View);
+	m_Shader->SetUniformsMat4f("proj", m_Proj);
 	GLCall(glBindVertexArray(m_VAO));
-	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+	//GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, 36)); //没有设置index pos  暂时用glDrawArrays
+	for (unsigned int i = 0; i < 10; i++)
+	{
+		glm::mat4 model(glm::mat4(1.0f));
+		model = glm::translate(model, m_CubePositions[i]);
+		float angle = 20.0f * i;
+		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+		model = glm::rotate(model, glm::radians((float)glfwGetTime() * 10), glm::vec3(1.0f, 0.3f, 0.5f));
+		m_Shader->SetUniformsMat4f("model", model);
+		m_Shader->SetUniformsMat4f("view", m_View);
+		m_Shader->SetUniformsMat4f("proj", m_Proj);
 
-	m_Trans = glm::mat4(1.0f); //重置矩阵
-	m_Trans = glm::translate(m_Trans, glm::vec3(-0.5f, 0.5f, 0.0f));
-	float scaleAmount = fabs(static_cast<float>(sin(glfwGetTime())));
-	m_Trans = glm::scale(m_Trans, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
-	m_Shader->SetUniformsMat4f("transform", m_Trans);
-	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
-
-	m_Trans = glm::mat4(1.0f); //重置矩阵
-	m_Trans = glm::scale(m_Trans, glm::vec3(0.3f, 0.3f, 0.3f));
-	m_Shader->SetUniformsMat4f("transform", m_Trans);
-	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
 
 	GLCall(glBindVertexArray(0));
 }
 
-void test::TestMatrix::OnImGuiRender()
+void test::TestCoordinate::OnImGuiRender()
 {
 	ImGui::SliderFloat("MixValue", &m_MixValue, 0.0f, 1.0f);
-	ImGui::SliderFloat("Rotate", &m_Rotate, -360.0f, 360.0f);
-	ImGui::SliderFloat3("Scale", &m_Scale.x, 0.0f, 1.0f);
 }
