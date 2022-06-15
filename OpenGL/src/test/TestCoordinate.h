@@ -22,5 +22,6 @@ namespace test
 		GLfloat m_MixValue;
 		glm::mat4 m_Model, m_View, m_Proj;
 		glm::vec3* m_CubePositions;
+		glm::vec3 m_ViewPos;
 	};
 }

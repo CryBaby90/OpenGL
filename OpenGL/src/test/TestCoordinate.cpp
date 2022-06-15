@@ -11,7 +11,7 @@
 test::TestCoordinate::TestCoordinate()
 	:m_Shader(nullptr), m_MixValue(0.2f), 
 	m_Model(glm::mat4(1.0f)), m_View(glm::mat4(1.0f)), m_Proj(glm::mat4(1.0f)),
-	m_CubePositions(nullptr)
+	m_CubePositions(nullptr), m_ViewPos(0.0f, 0.0f, -3.0f)
 {
 	//在上下文之后
 	GLfloat vertices[] = {
@@ -163,7 +163,7 @@ test::TestCoordinate::TestCoordinate()
 	//模型矩阵
 	m_Model = glm::rotate(m_Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	//观察矩阵
-	m_View = glm::translate(m_View, glm::vec3(0.0f, 0.0f, -3.0f));
+	m_View = glm::translate(m_View, m_ViewPos);
 	//投影矩阵
 	m_Proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
@@ -198,6 +198,9 @@ void test::TestCoordinate::OnUpdate(float deltaTime)
 {
 	m_Model = glm::mat4(1.0f);
 	m_Model = glm::rotate(m_Model, deltaTime * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+
+	m_View = glm::mat4(1.0f);
+	m_View = glm::translate(m_View, m_ViewPos);
 }
 
 void test::TestCoordinate::OnRender()
@@ -231,8 +234,6 @@ void test::TestCoordinate::OnRender()
 		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 		model = glm::rotate(model, glm::radians((float)glfwGetTime() * 10), glm::vec3(1.0f, 0.3f, 0.5f));
 		m_Shader->SetUniformsMat4f("model", model);
-		m_Shader->SetUniformsMat4f("view", m_View);
-		m_Shader->SetUniformsMat4f("proj", m_Proj);
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
@@ -243,4 +244,5 @@ void test::TestCoordinate::OnRender()
 void test::TestCoordinate::OnImGuiRender()
 {
 	ImGui::SliderFloat("MixValue", &m_MixValue, 0.0f, 1.0f);
+	ImGui::SliderFloat3("ViewPos", &m_ViewPos.x, -6.0f, 6.0f);
 }
