@@ -14,7 +14,7 @@ namespace test
 		Test() {}
 		virtual ~Test() {}
 
-		virtual void OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean constrainPitch = true){}
+		virtual void OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset){}
 		virtual void OnScroll(GLfloat xoffset, GLfloat yoffset){}
 		virtual void OnProcessInput(GLFWwindow* window, GLfloat deltaTime) {}
 		virtual void OnUpdate(float deltaTime) {}

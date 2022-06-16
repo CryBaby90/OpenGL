@@ -6,10 +6,6 @@
 #include <sstream>
 #include <glm/gtc/type_ptr.hpp>
 
-Shader::Shader()
-{
-}
-
 Shader::Shader(const std::string& vertexFilepath, const std::string& fragmentFilepath)
 	:m_ShaderID(0), m_VertexFilepath(vertexFilepath), m_FragmentFilepath(fragmentFilepath)
 {

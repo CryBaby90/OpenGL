@@ -1,4 +1,5 @@
 #include "TestCamera.h"
+#include "Global.h"
 
 #include <stb_image/stb_image.h>
 
@@ -6,9 +7,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 test::TestCamera::TestCamera()
-	:m_Shader(nullptr), m_MixValue(0.2f), m_CameraSpeed(2.5f),
+	:m_Shader(nullptr), m_Camera(nullptr), m_MixValue(0.2f), m_CameraSpeed(2.5f),
 	m_Model(glm::mat4(1.0f)), m_View(glm::mat4(1.0f)), m_Proj(glm::mat4(1.0f)),
-	m_CubePositions(nullptr), m_CameraPos(0.0f, 0.0f, 5.0f), m_CameraFront(0.0f, 0.0f, -1.0f), m_CameraUp(0.0f, 1.0f, 0.0f)
+	m_CubePositions(nullptr)
 {
 	//在上下文之后
 	GLfloat vertices[] = {
@@ -201,64 +202,34 @@ test::TestCamera::TestCamera()
 		glm::vec3(0.0f, 0.0f, 0.0f),//目标
 		glm::vec3(0.0f, 1.0f, 0.0f)//上向量
 	);
+
+	m_Camera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f));
 }
 
 test::TestCamera::~TestCamera()
 {
 	//资源释放
 	delete m_Shader;
+	delete m_Camera;
 	delete m_CubePositions;
 	GLCall(glDeleteVertexArrays(1, &m_VAO));
 	GLCall(glDeleteBuffers(1, &m_VBO));
 	GLCall(glDeleteBuffers(1, &m_EBO));
 }
 
-void test::TestCamera::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean constrainPitch)
+void test::TestCamera::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)
 {
-	Yaw += xoffset;
-	Pitch += yoffset;
-
-	// make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (constrainPitch)
-	{
-		if (Pitch > 89.0f)
-			Pitch = 89.0f;
-		if (Pitch < -89.0f)
-			Pitch = -89.0f;
-	}
-
-	glm::vec3 front;
-	//设置direction
-	front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-	front.y = sin(glm::radians(Pitch));
-	front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-	m_CameraFront = glm::normalize(front);
-	glm::vec3 Right = glm::normalize(glm::cross(m_CameraFront, glm::vec3(0.0f, 1.0f, 0.0f)));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-	m_CameraUp = glm::normalize(glm::cross(Right, m_CameraFront));
+	m_Camera->OnProcessMouseMovement(xoffset, yoffset);
 }
 
 void test::TestCamera::OnScroll(GLfloat xoffset, GLfloat yoffset)
 {
-	if (fov >= 1.0f && fov <= 45.0f)
-		fov -= yoffset;
-	if (fov <= 1.0f)
-		fov = 1.0f;
-	if (fov >= 45.0f)
-		fov = 45.0f;
-
-	m_Proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
+	m_Camera->OnScroll(xoffset, yoffset);
 }
 
 void test::TestCamera::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
 {
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		m_CameraPos += m_CameraSpeed * m_CameraFront * deltaTime;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		m_CameraPos -= m_CameraSpeed * m_CameraFront * deltaTime;
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		m_CameraPos -= glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * m_CameraSpeed * deltaTime;
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		m_CameraPos += glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * m_CameraSpeed * deltaTime;
+	m_Camera->OnProcessInput(window, deltaTime);
 }
 
 void test::TestCamera::OnUpdate(float deltaTime)
@@ -272,8 +243,8 @@ void test::TestCamera::OnUpdate(float deltaTime)
 	float camZ = cos(glfwGetTime()) * radius;
 	m_View = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));*/
 
-	m_View = glm::mat4(1.0f);
-	m_View = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
+	m_View = m_Camera->GetViewMatrix();
+	m_Proj = m_Camera->GetProjMatrix();
 }
 
 void test::TestCamera::OnRender()
@@ -317,6 +288,6 @@ void test::TestCamera::OnRender()
 void test::TestCamera::OnImGuiRender()
 {
 	ImGui::SliderFloat("MixValue", &m_MixValue, 0.0f, 1.0f);
-	ImGui::SliderFloat3("CameraPos", &m_CameraPos.x, -30, 30);
-	ImGui::InputFloat("CameraSpeed", &m_CameraSpeed);
+	//ImGui::SliderFloat3("CameraPos", &m_CameraPos.x, -30, 30);
+	//ImGui::InputFloat("CameraSpeed", &m_CameraSpeed);
 }

@@ -1,9 +1,7 @@
 #pragma once
 #include "GLCall.h"
+#include "Global.h"
 #include "../test/Test.h"
-
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
 
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
