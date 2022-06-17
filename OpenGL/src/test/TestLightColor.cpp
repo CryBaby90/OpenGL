@@ -78,13 +78,13 @@ test::TestLightColor::TestLightColor()
 	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
 	GLCall(glEnableVertexAttribArray(0));
 	
-	m_LightingShader = new Shader("res/shaders/LightColor/Vertex.Vshader", "res/shaders/LightColor/LightingFragement.Fshader");
-	m_CubeShader = new Shader("res/shaders/LightColor/Vertex.Vshader", "res/shaders/LightColor/CubeFragement.Fshader");
+	m_LightingShader = std::make_unique<Shader>("res/shaders/LightColor/Vertex.Vshader", "res/shaders/LightColor/LightingFragement.Fshader");
+	m_CubeShader = std::make_unique<Shader>("res/shaders/LightColor/Vertex.Vshader", "res/shaders/LightColor/CubeFragement.Fshader");
 	
 	//开启z-buffer
 	GLCall(glEnable(GL_DEPTH_TEST));
 
-	m_Camera = new Camera(glm::vec3(0.0f, 0.0f, 6.0f));
+	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 6.0f));
 
 	GLCall(glBindVertexArray(0));
 }
@@ -92,8 +92,6 @@ test::TestLightColor::TestLightColor()
 test::TestLightColor::~TestLightColor()
 {
 	//资源释放
-	delete m_LightingShader;
-	delete m_Camera;
 	GLCall(glDeleteVertexArrays(1, &m_CubeVAO));
 	GLCall(glDeleteVertexArrays(1, &m_lightVAO));
 	GLCall(glDeleteBuffers(1, &m_VBO));
