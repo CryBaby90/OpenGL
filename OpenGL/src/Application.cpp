@@ -10,6 +10,7 @@
 #include "test/TestMatrix.h"
 #include "test/TestCoordinate.h"
 #include "test/TestCamera.h"
+#include "test/TestLightColor.h"
 
 int main()
 {
@@ -85,6 +86,7 @@ int main()
 	testMenu->RegisterTest<::test::TestMatrix>("Matrix");
 	testMenu->RegisterTest<::test::TestCoordinate>("TestCoordinate");
 	testMenu->RegisterTest<::test::TestCamera>("Camera");
+	testMenu->RegisterTest<::test::TestLightColor>("LightColor");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);

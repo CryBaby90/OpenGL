@@ -24,7 +24,7 @@ namespace test
 		Camera* m_Camera;
 		GLuint m_VAO, m_VBO, m_EBO;
 		GLuint m_TextureID1, m_TextureID2;
-		GLfloat m_MixValue, m_CameraSpeed;
+		GLfloat m_MixValue;
 		glm::mat4 m_Model, m_View, m_Proj;
 		glm::vec3* m_CubePositions;
 	};
