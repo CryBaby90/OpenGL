@@ -17,7 +17,8 @@ namespace test
 		void OnRender() override;
 		void OnImGuiRender() override;
 	private:
-		Shader* m_Shader;
+		Shader* m_LightingShader;
+		Shader* m_CubeShader;
 		Camera* m_Camera;
 		GLuint m_CubeVAO, m_VBO, m_lightVAO;
 		glm::mat4 m_Model, m_View, m_Proj;
