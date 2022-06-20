@@ -78,7 +78,7 @@ void test::TestShaderPart::OnRender()
 	//  绘制物体
 	m_Shader->Bind(); //先glUseProgram
 	float timeValue = static_cast<GLfloat>(glfwGetTime());
-	float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+	float greenValue = (cos(timeValue) / 2.0f) + 0.5f;
 	m_Shader->SetUniform1f("offset_x", m_Offset_x);
 	m_Shader->SetUniforms4f("ourColor", ::glm::vec4(0.0f, greenValue, 0.0f, 1.0f));
 	GLCall(glBindVertexArray(m_VAO));

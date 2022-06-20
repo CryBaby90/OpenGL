@@ -39,7 +39,8 @@ void Camera::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean 
 	front.y = sin(glm::radians(m_Pitch));
 	front.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
 	m_CameraFront = glm::normalize(front);
-	glm::vec3 Right = glm::normalize(glm::cross(m_CameraFront, glm::vec3(0.0f, 1.0f, 0.0f)));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+	// 归一化  叉乘的是WorldUp
+	glm::vec3 Right = glm::normalize(glm::cross(m_CameraFront, glm::vec3(0.0f, 1.0f, 0.0f)));
 	m_CameraUp = glm::normalize(glm::cross(Right, m_CameraFront));
 }
 
