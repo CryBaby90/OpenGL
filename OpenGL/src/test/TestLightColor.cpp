@@ -67,13 +67,14 @@ test::TestLightColor::TestLightColor()
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VBO));
 	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 	
+	//设置顶点属性指针
 	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
 	GLCall(glEnableVertexAttribArray(0));
 
-
+	//创建并绑定lightVAO
 	GLCall(glGenVertexArrays(1, &m_lightVAO));
 	GLCall(glBindVertexArray(m_lightVAO));
-	//只需要绑定VBO不用再次设置VBO的数据，因为箱子的VBO数据中已经包含了正确的立方体顶点数据
+	//只需要绑定VBO不用再次设置VBO的数据，因为cube的VBO数据中已经包含了正确的立方体顶点数据
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VBO));
 	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
 	GLCall(glEnableVertexAttribArray(0));

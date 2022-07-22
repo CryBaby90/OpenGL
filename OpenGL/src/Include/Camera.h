@@ -13,9 +13,13 @@ public:
 	void OnScroll(GLfloat xoffset, GLfloat yoffset);
 	void OnProcessInput(GLFWwindow* window, GLfloat deltaTime);
 	void SetFov(GLfloat fov);
+	glm::vec3 GetPos();
 
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjMatrix();
+
+private:
+	void updateCameraVectors();
 
 private:
 	glm::vec3 m_CameraPos, m_CameraFront, m_CameraUp;

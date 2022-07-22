@@ -151,9 +151,10 @@ void test::TestMatrix::OnUpdate(float deltaTime)
 
 void test::TestMatrix::OnRender()
 {
-	m_Trans = glm::mat4(1.0f);
-	m_Trans = glm::rotate(m_Trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-	m_Trans = glm::translate(m_Trans, glm::vec3(0.5f, -0.5f, 0.0f));
+	//m_Trans = glm::mat4(1.0f);
+	//m_Trans = glm::translate(m_Trans, glm::vec3(0.5f, -0.5f, 0.0f));
+	//m_Trans = glm::rotate(m_Trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+	
 	
 
 	//  ªÊ÷∆ŒÔÃÂ
@@ -172,17 +173,17 @@ void test::TestMatrix::OnRender()
 	GLCall(glBindVertexArray(m_VAO));
 	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
-	m_Trans = glm::mat4(1.0f); //÷ÿ÷√æÿ’Û
-	m_Trans = glm::translate(m_Trans, glm::vec3(-0.5f, 0.5f, 0.0f));
-	float scaleAmount = fabs(static_cast<float>(sin(glfwGetTime())));
-	m_Trans = glm::scale(m_Trans, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
-	m_Shader->SetUniformsMat4f("transform", m_Trans);
-	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+	//m_Trans = glm::mat4(1.0f); //÷ÿ÷√æÿ’Û
+	//m_Trans = glm::translate(m_Trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+	//float scaleAmount = fabs(static_cast<float>(sin(glfwGetTime())));
+	//m_Trans = glm::scale(m_Trans, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
+	//m_Shader->SetUniformsMat4f("transform", m_Trans);
+	//GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
-	m_Trans = glm::mat4(1.0f); //÷ÿ÷√æÿ’Û
-	m_Trans = glm::scale(m_Trans, glm::vec3(0.3f, 0.3f, 0.3f));
-	m_Shader->SetUniformsMat4f("transform", m_Trans);
-	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+	//m_Trans = glm::mat4(1.0f); //÷ÿ÷√æÿ’Û
+	//m_Trans = glm::scale(m_Trans, glm::vec3(0.3f, 0.3f, 0.3f));
+	//m_Shader->SetUniformsMat4f("transform", m_Trans);
+	//GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
 	GLCall(glBindVertexArray(0));
 }

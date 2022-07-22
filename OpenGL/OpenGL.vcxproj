@@ -100,6 +100,7 @@
     <ClCompile Include="src\GLCall.cpp" />
     <ClCompile Include="src\include\glad.c" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\test\TestBaseLight.cpp" />
     <ClCompile Include="src\test\TestCamera.cpp" />
     <ClCompile Include="src\test\TestCoordinate.cpp" />
     <ClCompile Include="src\test\TestLightColor.cpp" />
@@ -125,6 +126,7 @@
     <ClInclude Include="src\include\GLCall.h" />
     <ClInclude Include="src\include\Global.h" />
     <ClInclude Include="src\include\Shader.h" />
+    <ClInclude Include="src\test\TestBaseLight.h" />
     <ClInclude Include="src\test\TestCamera.h" />
     <ClInclude Include="src\test\TestCoordinate.h" />
     <ClInclude Include="src\test\TestLightColor.h" />
