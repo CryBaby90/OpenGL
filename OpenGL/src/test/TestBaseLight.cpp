@@ -110,6 +110,8 @@ void test::TestBaseLight::OnUpdate(float deltaTime)
 {
 	m_View = m_Camera->GetViewMatrix();
 	m_Proj = m_Camera->GetProjMatrix();
+	//float timeValue = static_cast<GLfloat>(glfwGetTime());
+	//m_LightPos += glm::vec3(cos(timeValue), sin(timeValue), 0.0f) * 2.5f * deltaTime;
 }
 
 void test::TestBaseLight::OnRender()
@@ -122,7 +124,8 @@ void test::TestBaseLight::OnRender()
 	//给shader里的变量指定插槽
 	m_Model = glm::mat4(1.0f);
 	m_Model = glm::rotate(m_Model, glm::radians(static_cast<float>(glfwGetTime()) * 30), glm::vec3(0.5f, 0.5f, 0.0f));
-	m_Normal = glm::transpose(glm::inverse(m_Model));
+	m_Normal = glm::transpose(glm::inverse(m_Model)); //世界空间
+	m_Normal = glm::transpose(glm::inverse(m_View * m_Model)); //观察空间
 	m_CubeShader->SetUniformsMat4f("model", m_Model);
 	m_CubeShader->SetUniformsMat4f("view", m_View);
 	m_CubeShader->SetUniformsMat4f("proj", m_Proj);

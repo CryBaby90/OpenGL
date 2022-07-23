@@ -3,6 +3,7 @@
 
 in vec3 Normal;
 in vec3 FragPos;
+in vec3 LightingColor; // gouraud shading result
 
 out vec4 FragColor;
 
@@ -33,4 +34,8 @@ void main()
    
     vec3 result = (ambient + diffuse + specular) * objectColor;
     FragColor = vec4(result, 1.0);
+
+    //gouraud shading
+    FragColor = vec4(LightingColor * objectColor, 1.0);
 }
+
