@@ -85,10 +85,10 @@ test::TestBaseLight::TestBaseLight()
 	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0));
 	GLCall(glEnableVertexAttribArray(0));
 	
-	m_LightingShader = std::make_unique<Shader>("res/shaders/BaseLight/Vertex.Vshader", "res/shaders/BaseLight/LightingFragement.Fshader");
-	m_CubeShader = std::make_unique<Shader>("res/shaders/BaseLight/Vertex.Vshader", "res/shaders/BaseLight/CubeFragement.Fshader");
+	 m_CubeShader = std::make_unique<Shader>("res/shaders/BaseLight/Vertex.Vshader", "res/shaders/BaseLight/LightingFragement.Fshader");
+	 m_LightingShader = std::make_unique<Shader>("res/shaders/BaseLight/Vertex.Vshader", "res/shaders/BaseLight/CubeFragement.Fshader");
 	
-	//开启z-buffer
+	//开启z-buffer 见OpenGL 坐标系统
 	GLCall(glEnable(GL_DEPTH_TEST));
 
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 6.0f));
@@ -117,33 +117,31 @@ void test::TestBaseLight::OnRender()
 	//每次渲染迭代前清除之前的深度缓存
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-	
-
 	//先use shader
-	m_LightingShader->Bind();
+	m_CubeShader->Bind();
 	//给shader里的变量指定插槽
 	m_Model = glm::mat4(1.0f);
 	m_Model = glm::rotate(m_Model, glm::radians(static_cast<float>(glfwGetTime()) * 30), glm::vec3(0.5f, 0.5f, 0.0f));
-	m_LightingShader->SetUniformsMat4f("model", m_Model);
-	m_LightingShader->SetUniformsMat4f("view", m_View);
-	m_LightingShader->SetUniformsMat4f("proj", m_Proj);
-	m_LightingShader->SetUniforms3f("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-	m_LightingShader->SetUniforms3f("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-	m_LightingShader->SetUniforms3f("lightPos", m_LightPos);
-	m_LightingShader->SetUniforms3f("viewPos", m_Camera->GetPos());
+	m_CubeShader->SetUniformsMat4f("model", m_Model);
+	m_CubeShader->SetUniformsMat4f("view", m_View);
+	m_CubeShader->SetUniformsMat4f("proj", m_Proj);
+	m_CubeShader->SetUniforms3f("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+	m_CubeShader->SetUniforms3f("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+	m_CubeShader->SetUniforms3f("lightPos", m_LightPos);
+	m_CubeShader->SetUniforms3f("viewPos", m_Camera->GetPos());
 	GLCall(glBindVertexArray(m_CubeVAO));
 	//GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 36)); //没有设置index pos  暂时用glDrawArrays
 
 	//先use shader
-	m_CubeShader->Bind();
+	m_LightingShader->Bind();
 	//给shader里的变量指定插槽
 	m_Model = glm::mat4(1.0f);
 	m_Model = glm::translate(m_Model, m_LightPos);
 	m_Model = glm::scale(m_Model, glm::vec3(0.1f));
-	m_CubeShader->SetUniformsMat4f("model", m_Model);
-	m_CubeShader->SetUniformsMat4f("view", m_View);
-	m_CubeShader->SetUniformsMat4f("proj", m_Proj);
+	m_LightingShader->SetUniformsMat4f("model", m_Model);
+	m_LightingShader->SetUniformsMat4f("view", m_View);
+	m_LightingShader->SetUniformsMat4f("proj", m_Proj);
 	GLCall(glBindVertexArray(m_lightVAO));
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
 

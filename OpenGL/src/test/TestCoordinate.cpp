@@ -165,7 +165,7 @@ test::TestCoordinate::TestCoordinate()
 	//投影矩阵
 	m_Proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-	//开启z-buffer
+	//开启z-buffer 见OpenGL 坐标系统
 	GLCall(glEnable(GL_DEPTH_TEST));
 
 	m_CubePositions = new glm::vec3[]{
