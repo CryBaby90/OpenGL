@@ -8,7 +8,7 @@
 
 test::TestBaseLight::TestBaseLight()
 	:m_LightingShader(nullptr), m_CubeShader(nullptr), m_Camera(nullptr),
-	m_Model(glm::mat4(1.0f)), m_View(glm::mat4(1.0f)), m_Proj(glm::mat4(1.0f)),
+	m_Model(glm::mat4(1.0f)), m_View(glm::mat4(1.0f)), m_Proj(glm::mat4(1.0f)), m_Normal(glm::mat3(1.0f)),
 	m_LightPos(glm::vec3(0.0f, 0.0f, 0.0f))
 {
 	//在上下文之后
@@ -122,9 +122,11 @@ void test::TestBaseLight::OnRender()
 	//给shader里的变量指定插槽
 	m_Model = glm::mat4(1.0f);
 	m_Model = glm::rotate(m_Model, glm::radians(static_cast<float>(glfwGetTime()) * 30), glm::vec3(0.5f, 0.5f, 0.0f));
+	m_Normal = glm::transpose(glm::inverse(m_Model));
 	m_CubeShader->SetUniformsMat4f("model", m_Model);
 	m_CubeShader->SetUniformsMat4f("view", m_View);
 	m_CubeShader->SetUniformsMat4f("proj", m_Proj);
+	m_CubeShader->SetUniformsMat3f("normal", m_Normal);
 	m_CubeShader->SetUniforms3f("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
 	m_CubeShader->SetUniforms3f("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 	m_CubeShader->SetUniforms3f("lightPos", m_LightPos);
