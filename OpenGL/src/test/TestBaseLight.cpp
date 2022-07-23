@@ -8,7 +8,8 @@
 
 test::TestBaseLight::TestBaseLight()
 	:m_LightingShader(nullptr), m_CubeShader(nullptr), m_Camera(nullptr),
-	m_Model(glm::mat4(1.0f)), m_View(glm::mat4(1.0f)), m_Proj(glm::mat4(1.0f))
+	m_Model(glm::mat4(1.0f)), m_View(glm::mat4(1.0f)), m_Proj(glm::mat4(1.0f)),
+	m_LightPos(glm::vec3(0.0f, 0.0f, 0.0f))
 {
 	//在上下文之后
 	GLfloat vertices[] = {
@@ -93,6 +94,8 @@ test::TestBaseLight::TestBaseLight()
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 6.0f));
 
 	GLCall(glBindVertexArray(0));
+
+	m_LightPos = glm::vec3(0.0f, 1.0f, 1.0f);
 }
 
 test::TestBaseLight::~TestBaseLight()
@@ -114,20 +117,19 @@ void test::TestBaseLight::OnRender()
 	//每次渲染迭代前清除之前的深度缓存
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-	// lighting
-	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+	
 
 	//先use shader
 	m_LightingShader->Bind();
 	//给shader里的变量指定插槽
 	m_Model = glm::mat4(1.0f);
-	//m_Model = glm::rotate(m_Model, glm::radians(static_cast<float>(glfwGetTime()) * 30), lightPos);
+	m_Model = glm::rotate(m_Model, glm::radians(static_cast<float>(glfwGetTime()) * 30), glm::vec3(0.5f, 0.5f, 0.0f));
 	m_LightingShader->SetUniformsMat4f("model", m_Model);
 	m_LightingShader->SetUniformsMat4f("view", m_View);
 	m_LightingShader->SetUniformsMat4f("proj", m_Proj);
 	m_LightingShader->SetUniforms3f("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
 	m_LightingShader->SetUniforms3f("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-	m_LightingShader->SetUniforms3f("lightPos", lightPos);
+	m_LightingShader->SetUniforms3f("lightPos", m_LightPos);
 	m_LightingShader->SetUniforms3f("viewPos", m_Camera->GetPos());
 	GLCall(glBindVertexArray(m_CubeVAO));
 	//GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
@@ -137,8 +139,8 @@ void test::TestBaseLight::OnRender()
 	m_CubeShader->Bind();
 	//给shader里的变量指定插槽
 	m_Model = glm::mat4(1.0f);
-	m_Model = glm::translate(m_Model, lightPos);
-	m_Model = glm::scale(m_Model, glm::vec3(0.2f));
+	m_Model = glm::translate(m_Model, m_LightPos);
+	m_Model = glm::scale(m_Model, glm::vec3(0.1f));
 	m_CubeShader->SetUniformsMat4f("model", m_Model);
 	m_CubeShader->SetUniformsMat4f("view", m_View);
 	m_CubeShader->SetUniformsMat4f("proj", m_Proj);
@@ -155,7 +157,7 @@ void test::TestBaseLight::OnImGuiRender()
 
 void test::TestBaseLight::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)
 {
-	m_Camera->OnProcessMouseMovement(xoffset, yoffset);
+	//m_Camera->OnProcessMouseMovement(xoffset, yoffset);
 }
 
 void test::TestBaseLight::OnScroll(GLfloat xoffset, GLfloat yoffset)
@@ -165,5 +167,16 @@ void test::TestBaseLight::OnScroll(GLfloat xoffset, GLfloat yoffset)
 
 void test::TestBaseLight::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
 {
-	m_Camera->OnProcessInput(window, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		m_LightPos += glm::vec3(0.0f, 1.0f, 0.0f) * 2.5f * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		m_LightPos -= glm::vec3(0.0f, 1.0f, 0.0f) * 2.5f * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		m_LightPos -= glm::vec3(1.0f, 0.0f, 0.0f) * 2.5f * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		m_LightPos += glm::vec3(1.0f, 0.0f, 0.0f) * 2.5f * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		m_LightPos -= glm::vec3(0.0f, 0.0f, 1.0f) * 2.5f * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		m_LightPos += glm::vec3(0.0f, 0.0f, 1.0f) * 2.5f * deltaTime;
 }

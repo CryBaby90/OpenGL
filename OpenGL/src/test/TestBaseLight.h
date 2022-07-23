@@ -25,5 +25,6 @@ namespace test
 		std::unique_ptr<Camera> m_Camera;
 		GLuint m_CubeVAO, m_VBO, m_lightVAO;
 		glm::mat4 m_Model, m_View, m_Proj;
+		glm::vec3 m_LightPos;// lighting
 	};
 }

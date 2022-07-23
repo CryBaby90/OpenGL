@@ -1010,6 +1010,9 @@
     <ClInclude Include="src\test\TestBaseLight.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\OtherCamera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">

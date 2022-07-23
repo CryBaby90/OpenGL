@@ -125,6 +125,7 @@
     <ClInclude Include="src\include\Camera.h" />
     <ClInclude Include="src\include\GLCall.h" />
     <ClInclude Include="src\include\Global.h" />
+    <ClInclude Include="src\include\OtherCamera.h" />
     <ClInclude Include="src\include\Shader.h" />
     <ClInclude Include="src\test\TestBaseLight.h" />
     <ClInclude Include="src\test\TestCamera.h" />
