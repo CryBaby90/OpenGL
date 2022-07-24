@@ -73,7 +73,7 @@ test::TestMaterialLight::TestMaterialLight()
 	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0));
 	GLCall(glEnableVertexAttribArray(0));
 	//法线pointer
-	GLCall(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0));
+	GLCall(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))));
 	GLCall(glEnableVertexAttribArray(1));
 
 	//创建并绑定lightVAO
@@ -95,7 +95,7 @@ test::TestMaterialLight::TestMaterialLight()
 
 	GLCall(glBindVertexArray(0));
 
-	m_LightPos = glm::vec3(1.2f, 1.0f, 2.0f);
+	m_LightPos = glm::vec3(1.5f, 8.0f, -6.0f);
 }
 
 test::TestMaterialLight::~TestMaterialLight()
@@ -132,9 +132,12 @@ void test::TestMaterialLight::OnRender()
 	m_CubeShader->SetUniformsMat3f("normal", m_Normal);
 	m_CubeShader->SetUniforms3f("lightPos", m_LightPos);
 	m_CubeShader->SetUniforms3f("viewPos", m_Camera->GetPos());
-	m_CubeShader->SetUniforms3f("material.ambient", glm::vec3(0.0f, 0.1f, 0.06f));
+	m_CubeShader->SetUniforms3f("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+	m_CubeShader->SetUniforms3f("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+	m_CubeShader->SetUniforms3f("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+	/*m_CubeShader->SetUniforms3f("material.ambient", glm::vec3(0.0f, 0.1f, 0.06f));
 	m_CubeShader->SetUniforms3f("material.diffuse", glm::vec3(0.0f, 0.50980392f, 0.50980392f));
-	m_CubeShader->SetUniforms3f("material.specular", glm::vec3(0.50196078f, 0.50196078f, 0.50196078f));
+	m_CubeShader->SetUniforms3f("material.specular", glm::vec3(0.50196078f, 0.50196078f, 0.50196078f)); // 青色塑料(Cyan Plastic)容器*/
 	m_CubeShader->SetUniform1f("material.shininess", 32.0f);
 	//glm::vec3 lightColor;
 	//lightColor.x = sin(glfwGetTime() * 2.0f);
@@ -144,9 +147,11 @@ void test::TestMaterialLight::OnRender()
 	//glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // 很低的影响
 	//m_CubeShader->SetUniforms3f("light.ambient", ambientColor);
 	//m_CubeShader->SetUniforms3f("light.diffuse", diffuseColor);
-	m_CubeShader->SetUniforms3f("light.ambient", glm::vec3(1.0f, 1.0f, 1.0f));
-	m_CubeShader->SetUniforms3f("light.diffuse", glm::vec3(1.0f, 1.0f, 1.0f)); // 将光照调暗了一些以搭配场景
-	m_CubeShader->SetUniforms3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	m_CubeShader->SetUniforms3f("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	m_CubeShader->SetUniforms3f("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+	/*m_CubeShader->SetUniforms3f("light.ambient", glm::vec3(1.0f, 1.0f, 1.0f));
+	m_CubeShader->SetUniforms3f("light.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));// 青色塑料(Cyan Plastic)容器 */
+	m_CubeShader->SetUniforms3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f)); 
 	GLCall(glBindVertexArray(m_CubeVAO));
 	//GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 36)); //没有设置index pos  暂时用glDrawArrays
