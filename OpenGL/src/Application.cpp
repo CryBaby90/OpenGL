@@ -12,6 +12,7 @@
 #include "test/TestCamera.h"
 #include "test/TestLightColor.h"
 #include "test/TestBaseLight.h"
+#include "test/TestMaterialLight.h"
 
 int main()
 {
@@ -89,6 +90,7 @@ int main()
 	testMenu->RegisterTest<::test::TestCamera>("Camera");
 	testMenu->RegisterTest<::test::TestLightColor>("LightColor");
 	testMenu->RegisterTest<::test::TestBaseLight>("BaseLight");
+	testMenu->RegisterTest<::test::TestMaterialLight>("MaterialLight");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -108,7 +110,8 @@ int main()
 		processInput(window);
 
 		//渲染指令
-		GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+		//GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));//清屏函数  GL_COLOR_BUFFER_BIT清理颜色缓冲
 
 		// Start the Dear ImGui frame
