@@ -13,6 +13,7 @@
 #include "test/TestLightColor.h"
 #include "test/TestBaseLight.h"
 #include "test/TestMaterialLight.h"
+#include "test/TestDiffuseMap.h"
 
 int main()
 {
@@ -91,6 +92,7 @@ int main()
 	testMenu->RegisterTest<::test::TestLightColor>("LightColor");
 	testMenu->RegisterTest<::test::TestBaseLight>("BaseLight");
 	testMenu->RegisterTest<::test::TestMaterialLight>("MaterialLight");
+	testMenu->RegisterTest<::test::TestDiffuseMap>("TestDiffuseMap");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -111,7 +113,7 @@ int main()
 
 		//渲染指令
 		//GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
-		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+		GLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));//清屏函数  GL_COLOR_BUFFER_BIT清理颜色缓冲
 
 		// Start the Dear ImGui frame
