@@ -25,7 +25,7 @@ namespace test
 		std::unique_ptr<Shader> m_LightingShader;
 		std::unique_ptr<Shader> m_CubeShader;
 		std::unique_ptr<Camera> m_Camera;
-		GLuint m_CubeVAO, m_VBO, m_lightVAO, m_DiffuseMapID, m_SpecularMapID;
+		GLuint m_CubeVAO, m_VBO, m_lightVAO, m_DiffuseMapID, m_SpecularMapID, m_EmissionMapID;
 		glm::mat4 m_Model, m_View, m_Proj, m_Normal;
 		glm::vec3 m_LightPos;// lighting
 	};

@@ -11,6 +11,7 @@ struct Material {
     vec3 ambient; //环境光
     sampler2D diffuse; //漫反射 sampler2D 是所谓的不透明类型(Opaque Type)，也就是说我们不能将它实例化，只能通过uniform来定义它
     sampler2D specular;//高光
+    sampler2D emission;
     float shininess; //反光度
 }; 
 uniform Material material;
@@ -45,7 +46,10 @@ void main()
     //vec3 reflectDir = 2 * dot(norm, lightDir) * norm - lightDir; //2(n·l)n - l 反射方向计算
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
+    //vec3 specular = light.specular * spec * (vec3(1.0) - vec3(texture(material.specular, TexCoords))) //反转镜面光贴图的颜色值
    
-    vec3 result = (ambient + diffuse + specular);
+    //放射光贴图
+    vec3 emission = texture(material.emission, TexCoords).xyz; //放射光贴图 使用xyz
+    vec3 result = ambient + diffuse + specular + emission;
     FragColor = vec4(result, 1.0);
 }

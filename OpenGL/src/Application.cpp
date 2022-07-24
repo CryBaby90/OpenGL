@@ -92,7 +92,7 @@ int main()
 	testMenu->RegisterTest<::test::TestLightColor>("LightColor");
 	testMenu->RegisterTest<::test::TestBaseLight>("BaseLight");
 	testMenu->RegisterTest<::test::TestMaterialLight>("MaterialLight");
-	testMenu->RegisterTest<::test::TestDiffuseMap>("TestDiffuseMap");
+	testMenu->RegisterTest<::test::TestDiffuseMap>("DiffuseMap");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);

@@ -102,7 +102,8 @@ test::TestDiffuseMap::TestDiffuseMap()
 	m_LightPos = glm::vec3(1.5f, 8.0f, -6.0f);
 
 	m_DiffuseMapID = loadTexture("res/textures/DiffuseMap.png");
-	m_SpecularMapID = loadTexture("res/textures/SpecularMap.png");
+	m_SpecularMapID = loadTexture("res/textures/SpecularColorMap.png");
+	m_EmissionMapID = loadTexture("res/textures/matrix.jpg");
 }
 
 test::TestDiffuseMap::~TestDiffuseMap()
@@ -141,6 +142,7 @@ void test::TestDiffuseMap::OnRender()
 	//m_CubeShader->SetUniforms3f("material.ambient", glm::vec3(0.0f, 0.1f, 0.06f));
 	m_CubeShader->SetUniform1i("material.diffuse", 0);//使用0号纹理插槽
 	m_CubeShader->SetUniform1i("material.specular", 1);//使用1号纹理插槽
+	m_CubeShader->SetUniform1i("material.emission", 2);//使用1号纹理插槽
 	m_CubeShader->SetUniform1f("material.shininess", 64.0f);
 
 	m_CubeShader->SetUniforms3f("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -151,6 +153,8 @@ void test::TestDiffuseMap::OnRender()
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_DiffuseMapID));
 	GLCall(glActiveTexture(GL_TEXTURE1));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_SpecularMapID));
+	GLCall(glActiveTexture(GL_TEXTURE2));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_EmissionMapID));
 
 	GLCall(glBindVertexArray(m_CubeVAO));
 	//GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
