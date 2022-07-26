@@ -108,6 +108,7 @@
     <ClCompile Include="src\test\TestLightColor.cpp" />
     <ClCompile Include="src\test\TestMaterialLight.cpp" />
     <ClCompile Include="src\test\TestMatrix.cpp" />
+    <ClCompile Include="src\test\TestMultipleLights.cpp" />
     <ClCompile Include="src\test\TestShaderPart.cpp" />
     <ClCompile Include="src\test\Test.cpp" />
     <ClCompile Include="src\test\TestClearColor.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="src\test\TestLightColor.h" />
     <ClInclude Include="src\test\TestMaterialLight.h" />
     <ClInclude Include="src\test\TestMatrix.h" />
+    <ClInclude Include="src\test\TestMultipleLights.h" />
     <ClInclude Include="src\test\TestShaderPart.h" />
     <ClInclude Include="src\test\Test.h" />
     <ClInclude Include="src\test\TestClearColor.h" />

@@ -14,7 +14,7 @@ public:
 	void OnProcessInput(GLFWwindow* window, GLfloat deltaTime);
 	void SetFov(GLfloat fov);
 	glm::vec3 GetPos();
-
+	glm::vec3 GetFront();
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjMatrix();
 
