@@ -99,6 +99,8 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\GLCall.cpp" />
     <ClCompile Include="src\include\glad.c" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\test\TestBaseLight.cpp" />
     <ClCompile Include="src\test\TestCamera.cpp" />
@@ -108,6 +110,7 @@
     <ClCompile Include="src\test\TestLightColor.cpp" />
     <ClCompile Include="src\test\TestMaterialLight.cpp" />
     <ClCompile Include="src\test\TestMatrix.cpp" />
+    <ClCompile Include="src\test\TestModel.cpp" />
     <ClCompile Include="src\test\TestMultipleLights.cpp" />
     <ClCompile Include="src\test\TestShaderPart.cpp" />
     <ClCompile Include="src\test\Test.cpp" />
@@ -129,6 +132,8 @@
     <ClInclude Include="src\include\Camera.h" />
     <ClInclude Include="src\include\GLCall.h" />
     <ClInclude Include="src\include\Global.h" />
+    <ClInclude Include="src\include\Mesh.h" />
+    <ClInclude Include="src\include\Model.h" />
     <ClInclude Include="src\include\OtherCamera.h" />
     <ClInclude Include="src\include\Shader.h" />
     <ClInclude Include="src\test\TestBaseLight.h" />
@@ -139,6 +144,7 @@
     <ClInclude Include="src\test\TestLightColor.h" />
     <ClInclude Include="src\test\TestMaterialLight.h" />
     <ClInclude Include="src\test\TestMatrix.h" />
+    <ClInclude Include="src\test\TestModel.h" />
     <ClInclude Include="src\test\TestMultipleLights.h" />
     <ClInclude Include="src\test\TestShaderPart.h" />
     <ClInclude Include="src\test\Test.h" />

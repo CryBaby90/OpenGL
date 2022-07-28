@@ -16,6 +16,7 @@
 #include "test/TestDiffuseMap.h"
 #include "test/TestLightCasters.h"
 #include "test/TestMultipleLights.h"
+#include "test/TestModel.h"
 
 int main()
 {
@@ -97,6 +98,7 @@ int main()
 	testMenu->RegisterTest<::test::TestDiffuseMap>("DiffuseMap");
 	testMenu->RegisterTest<::test::TestLightCasters>("LightCasters");
 	testMenu->RegisterTest<::test::TestMultipleLights>("MultipleLights");
+	testMenu->RegisterTest<::test::TestModel>("Model");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
