@@ -90,7 +90,7 @@ int main()
 	testMenu->RegisterTest<::test::TestShaderPart>("Shader");
 	testMenu->RegisterTest<::test::TestTexture>("Texture");
 	testMenu->RegisterTest<::test::TestMatrix>("Matrix");
-	testMenu->RegisterTest<::test::TestCoordinate>("TestCoordinate");
+	testMenu->RegisterTest<::test::TestCoordinate>("Coordinate");
 	testMenu->RegisterTest<::test::TestCamera>("Camera");
 	testMenu->RegisterTest<::test::TestLightColor>("LightColor");
 	testMenu->RegisterTest<::test::TestBaseLight>("BaseLight");
@@ -120,8 +120,9 @@ int main()
 		//渲染指令
 		//GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 		GLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT));//清屏函数  GL_COLOR_BUFFER_BIT清理颜色缓冲
-
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));//清屏函数  GL_COLOR_BUFFER_BIT清理颜色缓冲
+																   //		  GL_DEPTH_BUFFER_BIT清除深度缓冲
+		 
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();

@@ -34,8 +34,8 @@ void test::TestModel::OnRender()
 {
 	m_Shader->Bind();
 	m_Model = glm::mat4(1.0f);
-	m_Model = glm::translate(m_Model, glm::vec3(0.0f, -0.5f, 0.0f));
 	m_Model = glm::scale(m_Model, glm::vec3(0.1f, 0.1f, 0.1f));
+	m_Model = glm::translate(m_Model, glm::vec3(0.0f, -0.5f, 0.0f));
 	m_Shader->SetUniformsMat4f("model", m_Model);
 	m_Shader->SetUniformsMat4f("view", m_View);
 	m_Shader->SetUniformsMat4f("proj", m_Proj);
