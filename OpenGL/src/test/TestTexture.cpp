@@ -61,7 +61,7 @@ test::TestTexture::TestTexture()
 	m_Shader = new Shader("res/shaders/Texture/Vertex.Vshader", "res/shaders/Texture/Fragment.Fshader");
 
 	//7	纹理
-	GLCall(glGenTextures(1, &m_TextureID1));
+	GLCall(glGenTextures(1, &m_TextureID1));//参数1：生成的纹理数量
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID1));
 	// 为当前绑定的纹理对象设置环绕、过滤方式
 	//GL_REPEAT	对纹理的默认行为。重复纹理图像。

@@ -105,6 +105,7 @@
     <ClCompile Include="src\test\TestBaseLight.cpp" />
     <ClCompile Include="src\test\TestCamera.cpp" />
     <ClCompile Include="src\test\TestCoordinate.cpp" />
+    <ClCompile Include="src\test\TestDepthTesting.cpp" />
     <ClCompile Include="src\test\TestDiffuseMap.cpp" />
     <ClCompile Include="src\test\TestLightCasters.cpp" />
     <ClCompile Include="src\test\TestLightColor.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="src\test\TestBaseLight.h" />
     <ClInclude Include="src\test\TestCamera.h" />
     <ClInclude Include="src\test\TestCoordinate.h" />
+    <ClInclude Include="src\test\TestDepthTesting.h" />
     <ClInclude Include="src\test\TestDiffuseMap.h" />
     <ClInclude Include="src\test\TestLightCasters.h" />
     <ClInclude Include="src\test\TestLightColor.h" />

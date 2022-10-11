@@ -17,6 +17,7 @@
 #include "test/TestLightCasters.h"
 #include "test/TestMultipleLights.h"
 #include "test/TestModel.h"
+#include "test/TestDepthTesting.h"
 
 int main()
 {
@@ -99,6 +100,7 @@ int main()
 	testMenu->RegisterTest<::test::TestLightCasters>("LightCasters");
 	testMenu->RegisterTest<::test::TestMultipleLights>("MultipleLights");
 	testMenu->RegisterTest<::test::TestModel>("Model");
+	testMenu->RegisterTest<::test::TestDepthTesting>("DepthTesting");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
