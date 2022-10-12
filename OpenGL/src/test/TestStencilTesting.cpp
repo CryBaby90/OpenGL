@@ -217,7 +217,8 @@ test::TestStencilTesting::TestStencilTesting()
 
 	/// <summary>
 	/// 模板测试函数  参考值  mask
-	/// 测试函数同深度测试
+	/// 测试函数同深度测试 
+	/// 告诉OpenGL 对模板缓冲做什么
 	/// </summary>
 	GLCall(glStencilFunc(GL_EQUAL, 1, 0xFF));
 
@@ -225,6 +226,7 @@ test::TestStencilTesting::TestStencilTesting()
 	/// 模板测试失败时采取的行为  
 	/// 模板测试通过 深度测试失败采取行为
 	/// 模板测试和深度测试都通过采取的行为
+	/// 更新缓冲
 	/// </summary>
 	/*	GL_KEEP	保持当前储存的模板值
 		GL_ZERO	将模板值设置为0
@@ -236,6 +238,9 @@ test::TestStencilTesting::TestStencilTesting()
 		GL_INVERT	按位翻转当前的模板缓冲值*/
 	GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
 
+	/// <summary>
+	/// 设置掩码值  
+	/// </summary>
 	//GLCall(glStencilMask(0xFF)); // 每一位写入模板缓冲时都保持原样
 	//GLCall(glStencilMask(0x00)); // 每一位在写入模板缓冲时都会变成0（禁用写入）
 }
