@@ -18,6 +18,7 @@
 #include "test/TestMultipleLights.h"
 #include "test/TestModel.h"
 #include "test/TestDepthTesting.h"
+#include "test/TestStencilTesting.h"
 
 int main()
 {
@@ -101,6 +102,7 @@ int main()
 	testMenu->RegisterTest<::test::TestMultipleLights>("MultipleLights");
 	testMenu->RegisterTest<::test::TestModel>("Model");
 	testMenu->RegisterTest<::test::TestDepthTesting>("DepthTesting");
+	testMenu->RegisterTest<::test::TestStencilTesting>("TestStencilTesting");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -122,9 +124,13 @@ int main()
 		//渲染指令
 		//GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 		GLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));//清屏函数  GL_COLOR_BUFFER_BIT清理颜色缓冲
-																   //		  GL_DEPTH_BUFFER_BIT清除深度缓冲
-		 
+		/*
+		* 清屏函数  GL_COLOR_BUFFER_BIT清理颜色缓冲
+		* 清屏函数  GL_DEPTH_BUFFER_BIT清理深度缓冲
+		* 清屏函数  GL_STENCIL_BUFFER_BIT清理模板缓冲
+		*/
+		//GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+																   
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();

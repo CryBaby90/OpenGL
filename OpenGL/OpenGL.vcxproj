@@ -117,6 +117,7 @@
     <ClCompile Include="src\test\Test.cpp" />
     <ClCompile Include="src\test\TestClearColor.cpp" />
     <ClCompile Include="src\test\TestStandDraw.cpp" />
+    <ClCompile Include="src\test\TestStencilTesting.cpp" />
     <ClCompile Include="src\test\TestTexture.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="src\test\Test.h" />
     <ClInclude Include="src\test\TestClearColor.h" />
     <ClInclude Include="src\test\TestStandDraw.h" />
+    <ClInclude Include="src\test\TestStencilTesting.h" />
     <ClInclude Include="src\test\TestTexture.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
