@@ -19,6 +19,7 @@
 #include "test/TestModel.h"
 #include "test/TestDepthTesting.h"
 #include "test/TestStencilTesting.h"
+#include "test/TestBlending.h"
 
 int main()
 {
@@ -103,6 +104,7 @@ int main()
 	testMenu->RegisterTest<::test::TestModel>("Model");
 	testMenu->RegisterTest<::test::TestDepthTesting>("DepthTesting");
 	testMenu->RegisterTest<::test::TestStencilTesting>("TestStencilTesting");
+	testMenu->RegisterTest<::test::TestBlending>("TestBlending");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);

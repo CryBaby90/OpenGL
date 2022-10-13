@@ -103,6 +103,7 @@
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\test\TestBaseLight.cpp" />
+    <ClCompile Include="src\test\TestBlending.cpp" />
     <ClCompile Include="src\test\TestCamera.cpp" />
     <ClCompile Include="src\test\TestCoordinate.cpp" />
     <ClCompile Include="src\test\TestDepthTesting.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="src\include\OtherCamera.h" />
     <ClInclude Include="src\include\Shader.h" />
     <ClInclude Include="src\test\TestBaseLight.h" />
+    <ClInclude Include="src\test\TestBlending.h" />
     <ClInclude Include="src\test\TestCamera.h" />
     <ClInclude Include="src\test\TestCoordinate.h" />
     <ClInclude Include="src\test\TestDepthTesting.h" />

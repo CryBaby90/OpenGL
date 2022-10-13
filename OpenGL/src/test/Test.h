@@ -20,6 +20,7 @@ namespace test
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}	
+		virtual void LoadImage(GLuint* textureID, char const* filename){}
 	};
 
 	class TestMenu : public Test

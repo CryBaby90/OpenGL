@@ -114,6 +114,9 @@
     <ClCompile Include="src\test\TestStencilTesting.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\test\TestBlending.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\GLCall.h">
@@ -1065,6 +1068,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\test\TestStencilTesting.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\TestBlending.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

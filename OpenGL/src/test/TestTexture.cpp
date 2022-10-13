@@ -63,6 +63,22 @@ test::TestTexture::TestTexture()
 	//7	纹理
 	GLCall(glGenTextures(1, &m_TextureID1));//参数1：生成的纹理数量
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID1));
+	//加载并生成纹理
+	GLint width, height, nrChannels;
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* textureData = stbi_load("res/textures/container.jpg", &width, &height, &nrChannels, 0);
+	if (textureData)
+	{
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData));
+		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
+	}
+	else
+	{
+		std::cout << "Failed to load texture1" << std::endl;
+	}
+	stbi_image_free(textureData);
+
+	//在绑定TextureID 之后
 	// 为当前绑定的纹理对象设置环绕、过滤方式
 	//GL_REPEAT	对纹理的默认行为。重复纹理图像。
 	//GL_MIRRORED_REPEAT	和GL_REPEAT一样，但每次重复图片是镜像放置的
@@ -80,28 +96,9 @@ test::TestTexture::TestTexture()
 	//GL_LINEAR_MIPMAP_LINEAR	在两个邻近的多级渐远纹理之间使用线性插值，并使用线性插值进行采样
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-	//加载并生成纹理
-	GLint width, height, nrChannels;
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* textureData = stbi_load("res/textures/container.jpg", &width, &height, &nrChannels, 0);
-	if (textureData)
-	{
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData));
-		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
-	}
-	else
-	{
-		std::cout << "Failed to load texture1" << std::endl;
-	}
-	stbi_image_free(textureData);
 
 	GLCall(glGenTextures(1, &m_TextureID2));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID2));
-	// 为当前绑定的纹理对象设置环绕、过滤方式
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
 	textureData = stbi_load("res/textures/awesomeface.png", &width, &height, &nrChannels, 0);
 	if (textureData)
@@ -114,6 +111,13 @@ test::TestTexture::TestTexture()
 		std::cout << "Failed to load texture1" << std::endl;
 	}
 	stbi_image_free(textureData);
+
+	// 为当前绑定的纹理对象设置环绕、过滤方式 
+	//在绑定TextureID 之后
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 }
 
 test::TestTexture::~TestTexture()
