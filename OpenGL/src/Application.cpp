@@ -20,6 +20,7 @@
 #include "test/TestDepthTesting.h"
 #include "test/TestStencilTesting.h"
 #include "test/TestBlending.h"
+#include "test/TestFaceCulling.h"
 
 int main()
 {
@@ -103,8 +104,9 @@ int main()
 	testMenu->RegisterTest<::test::TestMultipleLights>("MultipleLights");
 	testMenu->RegisterTest<::test::TestModel>("Model");
 	testMenu->RegisterTest<::test::TestDepthTesting>("DepthTesting");
-	testMenu->RegisterTest<::test::TestStencilTesting>("TestStencilTesting");
-	testMenu->RegisterTest<::test::TestBlending>("TestBlending");
+	testMenu->RegisterTest<::test::TestStencilTesting>("StencilTesting");
+	testMenu->RegisterTest<::test::TestBlending>("Blending");
+	testMenu->RegisterTest<::test::TestFaceCulling>("FaceCulling");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -131,7 +133,7 @@ int main()
 		* 清屏函数  GL_DEPTH_BUFFER_BIT清理深度缓冲
 		* 清屏函数  GL_STENCIL_BUFFER_BIT清理模板缓冲
 		*/
-		//GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 																   
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
