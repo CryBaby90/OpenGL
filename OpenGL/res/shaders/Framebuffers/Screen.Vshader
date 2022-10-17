@@ -7,11 +7,11 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
 
-out vec2 TexCoord;
+out vec2 TexCoords;
 
 void main()
 {
     gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);
-    TexCoord = aTexCoord;
+    TexCoords = aTexCoord;
 }
 

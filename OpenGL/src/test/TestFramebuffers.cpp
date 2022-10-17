@@ -312,7 +312,7 @@ void test::TestFramebuffers::LoadImage(GLuint* textureID, char const* filename)
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, textureData));
 		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT)); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat 
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT)); 
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
@@ -373,16 +373,17 @@ void test::TestFramebuffers::OnRender()
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
 	GLCall(glBindVertexArray(0));
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_DEPTH_TEST);
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	//默认帧缓冲
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+	GLCall(glDisable(GL_DEPTH_TEST));
+	GLCall(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
+	GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
 	m_ScreenShader->Bind();
 	m_Shader->SetUniform1i("screenTexture", 0);
-	glBindVertexArray(m_QuadVAO);
-	glBindTexture(GL_TEXTURE_2D, m_TextureColorbuffer);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	GLCall(glBindVertexArray(m_QuadVAO));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureColorbuffer));
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
 }
 
 void test::TestFramebuffers::OnImGuiRender()
