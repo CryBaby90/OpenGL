@@ -22,6 +22,7 @@
 #include "test/TestBlending.h"
 #include "test/TestFaceCulling.h"
 #include "test/TestFramebuffers.h"
+#include "test/TestCubemaps.h"
 
 int main()
 {
@@ -109,6 +110,7 @@ int main()
 	testMenu->RegisterTest<::test::TestBlending>("Blending");
 	testMenu->RegisterTest<::test::TestFaceCulling>("FaceCulling");
 	testMenu->RegisterTest<::test::TestFramebuffers>("Framebuffers");
+	testMenu->RegisterTest<::test::TestCubemaps>("Cubemaps");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);

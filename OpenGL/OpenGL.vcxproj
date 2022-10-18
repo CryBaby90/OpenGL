@@ -106,6 +106,7 @@
     <ClCompile Include="src\test\TestBlending.cpp" />
     <ClCompile Include="src\test\TestCamera.cpp" />
     <ClCompile Include="src\test\TestCoordinate.cpp" />
+    <ClCompile Include="src\test\TestCubemaps.cpp" />
     <ClCompile Include="src\test\TestDepthTesting.cpp" />
     <ClCompile Include="src\test\TestDiffuseMap.cpp" />
     <ClCompile Include="src\test\TestFaceCulling.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="src\test\TestBlending.h" />
     <ClInclude Include="src\test\TestCamera.h" />
     <ClInclude Include="src\test\TestCoordinate.h" />
+    <ClInclude Include="src\test\TestCubemaps.h" />
     <ClInclude Include="src\test\TestDepthTesting.h" />
     <ClInclude Include="src\test\TestDiffuseMap.h" />
     <ClInclude Include="src\test\TestFaceCulling.h" />
