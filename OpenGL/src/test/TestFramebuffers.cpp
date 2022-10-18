@@ -60,7 +60,7 @@ test::TestFramebuffers::TestFramebuffers()
 	};
 
 	float planeVertices[] = {
-		// positions          // texture Coords 
+		// positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
 		 5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
 		-5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
 		-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
@@ -90,29 +90,30 @@ test::TestFramebuffers::TestFramebuffers()
 	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0));
 	GLCall(glEnableVertexAttribArray(1));
 	GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))));
+	GLCall(glBindVertexArray(0));
 
 	// plane VAO
 	GLCall(glGenVertexArrays(1, &m_PlaneVAO));
 	GLCall(glGenBuffers(1, &m_PlaneVBO));
 	GLCall(glBindVertexArray(m_PlaneVAO));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_PlaneVBO));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW));
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0));
 	GLCall(glEnableVertexAttribArray(1));
 	GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))));
+	GLCall(glBindVertexArray(0));
 
 	// screen quad VAO
 	GLCall(glGenVertexArrays(1, &m_QuadVAO));
 	GLCall(glGenBuffers(1, &m_QuadVBO));
 	GLCall(glBindVertexArray(m_QuadVAO));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_QuadVBO));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW));
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0));
 	GLCall(glEnableVertexAttribArray(1));
 	GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float))));
-
 	GLCall(glBindVertexArray(0));
 
 
@@ -280,10 +281,16 @@ test::TestFramebuffers::~TestFramebuffers()
 	GLCall(glDeleteBuffers(1, &m_CubeVBO));
 
 	GLCall(glDeleteVertexArrays(1, &m_PlaneVAO));
-	GLCall(glDeleteBuffers(1, &m_PlaneVAO));
+	GLCall(glDeleteBuffers(1, &m_PlaneVBO));
 
 	GLCall(glDeleteVertexArrays(1, &m_QuadVAO));
 	GLCall(glDeleteBuffers(1, &m_QuadVBO));
+
+	GLCall(glDeleteFramebuffers(1, &m_FBO));
+	GLCall(glDeleteRenderbuffers(1, &m_RBO));
+
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+	GLCall(glBindRenderbuffer(GL_RENDERBUFFER, 0));
 }
 
 void test::TestFramebuffers::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)

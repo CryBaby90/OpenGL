@@ -252,6 +252,8 @@ test::TestBlending::~TestBlending()
 	GLCall(glDeleteBuffers(1, &m_CubeVBO));
 	GLCall(glDeleteVertexArrays(1, &m_PlaneVAO));
 	GLCall(glDeleteBuffers(1, &m_PlaneVBO));
+	GLCall(glDeleteVertexArrays(1, &m_TransparenVAO));
+	GLCall(glDeleteBuffers(1, &m_TransparenVBO));
 	//GLCall(glDeleteBuffers(1, &m_EBO));
 }
 
