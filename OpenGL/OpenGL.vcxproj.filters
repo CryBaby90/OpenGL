@@ -84,9 +84,6 @@
     <ClCompile Include="src\test\TestBaseLight.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\test\TestMaterialLight.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -124,6 +121,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\test\TestCubemaps.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tutorial\Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1089,6 +1089,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\test\TestCubemaps.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tutorial\camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tutorial\shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
