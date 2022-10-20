@@ -15,48 +15,48 @@ test::TestCubemaps::TestCubemaps()
 {
 	//在上下文之后
 	float cubeVertices[] = {
-		// Back face
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right         
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-		// Front face
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-		// Left face
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-		// Right face
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right         
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left     
-		// Bottom face
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-		// Top face
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right     
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left        
+		// positions          // texture Coords
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 	float skyboxVertices[] = {
 		// positions          
@@ -136,8 +136,8 @@ test::TestCubemaps::TestCubemaps()
 	GLCall(glBindVertexArray(0));
 
 	//6  着色器程序
-	m_Shader = std::make_unique<Shader>("res/shaders/Cubemaps/Vertex.Vshader", "res/shaders/Cubemaps/Fragment.Fshader");
-	m_CubemapsShader = std::make_unique<Shader>("res/shaders/Cubemaps/Cubemaps.Vshader", "res/shaders/Cubemaps/Cubemaps.Fshader");
+	m_Shader = std::make_unique<TutorialShader>("res/TutorialShader/Cubemaps/Vertex.Vshader", "res/TutorialShader/Cubemaps/Fragment.Fshader");
+	m_CubemapsShader = std::make_unique<TutorialShader>("res/TutorialShader/Cubemaps/Cubemaps.Vshader", "res/TutorialShader/Cubemaps/Cubemaps.Fshader");
 
 	//7	纹理
 	//CubeTexture
@@ -145,6 +145,13 @@ test::TestCubemaps::TestCubemaps()
 	m_CubemapTextureID = LoadCubemap(faces);
 
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
+
+	m_Shader->use();
+	//给shader里的变量指定插槽
+	m_Shader->setInt("texture1", 0);
+
+	m_CubemapsShader->use();
+	m_CubemapsShader->setInt("skybox", 0);
 }
 
 test::TestCubemaps::~TestCubemaps()
@@ -250,32 +257,31 @@ void test::TestCubemaps::OnRender()
 	m_Proj = m_Camera->GetProjMatrix();
 
 	//先use shader
-	m_Shader->Bind();
-	//给shader里的变量指定插槽
-	m_Shader->SetUniform1i("texture1", 0);
+	m_Shader->use();
 	
-
 	//cube
-	m_Model = glm::translate(m_Model, glm::vec3(2.0f, 0.0f, 0.0f));
-	m_Shader->SetUniformsMat4f("model", m_Model);
-	m_Shader->SetUniformsMat4f("view", m_View);
-	m_Shader->SetUniformsMat4f("proj", m_Proj);
+	//m_Model = glm::translate(m_Model, glm::vec3(2.0f, 0.0f, 0.0f));
+	m_Shader->setMat4("model", m_Model);
+	m_Shader->setMat4("view", m_View);
+	m_Shader->setMat4("projection", m_Proj);
 	GLCall(glBindVertexArray(m_CubeVAO));
+	glActiveTexture(GL_TEXTURE0);
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_CubeTextureID));
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 36)); //没有设置index pos  暂时用glDrawArrays
 	GLCall(glBindVertexArray(0));
 
 	// skyboxs  后渲染天空盒 减少FragmentShader调用
-	GLCall(glDepthMask(GL_LEQUAL));
-	m_CubemapsShader->Bind();
-	m_CubemapsShader->SetUniformsMat4f("view", m_View);
-	m_CubemapsShader->SetUniformsMat4f("proj", m_Proj);
-	m_CubemapsShader->SetUniform1i("skybox", 0);
+	GLCall(glDepthFunc(GL_LEQUAL));
+	m_CubemapsShader->use();
+	m_View = glm::mat4(glm::mat3(m_Camera->GetViewMatrix())); // remove translation from the view matrix
+	m_CubemapsShader->setMat4("view", m_View);
+	m_CubemapsShader->setMat4("projection", m_Proj);
 	GLCall(glBindVertexArray(m_CubemapsVAO));
+	glActiveTexture(GL_TEXTURE0);
 	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, m_CubemapTextureID));
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
 	GLCall(glBindVertexArray(0));
-	GLCall(glDepthMask(GL_LESS));
+	GLCall(glDepthFunc(GL_LESS));
 }
 
 void test::TestCubemaps::OnImGuiRender()
