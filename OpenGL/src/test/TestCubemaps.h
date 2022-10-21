@@ -2,7 +2,6 @@
 #include "Test.h"
 #include "Shader.h"
 #include "Camera.h"
-#include "../Tutorial/shader.h"
 
 #include <glm/glm.hpp>
 
@@ -21,8 +20,8 @@ namespace test
 		void LoadImage(GLuint* textureID, char const* filename) override;
 		
 	private:
-		std::unique_ptr<TutorialShader> m_Shader;
-		std::unique_ptr<TutorialShader> m_CubemapsShader;
+		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<Shader> m_CubemapsShader;
 		std::unique_ptr<Camera> m_Camera;
 		GLuint m_CubeVAO, m_CubeVBO;
 		GLuint m_CubemapsVAO, m_CubemapsVBO;
@@ -33,5 +32,6 @@ namespace test
 
 	private:
 		int LoadCubemap(std::vector<std::string> faces);
+		int LoadImage(char const* filename);
 	};
 }

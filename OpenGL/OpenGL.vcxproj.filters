@@ -123,7 +123,7 @@
     <ClCompile Include="src\test\TestCubemaps.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tutorial\Main.cpp">
+    <ClCompile Include="src\Application.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
