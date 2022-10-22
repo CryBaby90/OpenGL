@@ -151,7 +151,7 @@ test::TestBlending::TestBlending()
 	//7	纹理
 	
 	//CubeTexture
-	LoadImage(&m_CubeTextureID, "res/textures/wood.png");
+	m_CubeTextureID = LoadImage("res/textures/wood.png");
 	// 为当前绑定的纹理对象设置环绕、过滤方式
 	//GL_REPEAT	对纹理的默认行为。重复纹理图像。
 	//GL_MIRRORED_REPEAT	和GL_REPEAT一样，但每次重复图片是镜像放置的
@@ -172,7 +172,7 @@ test::TestBlending::TestBlending()
 	
 
 	//Plane
-	LoadImage(&m_PlaneTextureID, "res/textures/brickDiffuse.jpg");
+	m_PlaneTextureID = LoadImage("res/textures/brickDiffuse.jpg");
 	// 为当前绑定的纹理对象设置环绕、过滤方式
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
@@ -181,7 +181,7 @@ test::TestBlending::TestBlending()
 
 	//transparen
 	//LoadImage(&m_TransparenTextureID, "res/textures/grass.png");
-	LoadImage(&m_TransparenTextureID, "res/textures/blending_transparent_window.png");
+	m_TransparenTextureID = LoadImage("res/textures/blending_transparent_window.png");
 	// 为当前绑定的纹理对象设置环绕、过滤方式
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
@@ -262,13 +262,14 @@ void test::TestBlending::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset
 	m_Camera->OnProcessMouseMovement(xoffset, yoffset);
 }
 
-void test::TestBlending::LoadImage(GLuint* textureID, char const* filename)
+int test::TestBlending::LoadImage(char const* filename)
 {
-	GLCall(glGenTextures(1, textureID));
-	GLCall(glBindTexture(GL_TEXTURE_2D, *textureID));
+	unsigned int textureID;
+	GLCall(glGenTextures(1, &textureID));
+	
 	//加载并生成纹理
 	GLint width, height, nrChannels;
-	stbi_set_flip_vertically_on_load(true);
+	//stbi_set_flip_vertically_on_load(true); //图文倒置
 	unsigned char* textureData = stbi_load(filename, &width, &height, &nrChannels, 0);
 	if (textureData)
 	{
@@ -279,7 +280,7 @@ void test::TestBlending::LoadImage(GLuint* textureID, char const* filename)
 			format = GL_RGB;
 		else if (nrChannels == 4)
 			format = GL_RGBA;
-
+		GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, textureData));
 		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 
@@ -293,6 +294,7 @@ void test::TestBlending::LoadImage(GLuint* textureID, char const* filename)
 		std::cout << "Failed to load texture1" << std::endl;
 	}
 	stbi_image_free(textureData);
+	return textureID;
 }
 
 void test::TestBlending::OnUpdate(float deltaTime)

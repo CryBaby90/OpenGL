@@ -17,7 +17,10 @@ namespace test
 		void OnRender() override;
 		void OnImGuiRender() override;
 		void OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset) override;
-		void LoadImage(GLuint* textureID, char const* filename) override;
+
+	protected:
+		int LoadImage(char const* filename) override;
+
 	private:
 		Shader* m_Shader;
 		std::unique_ptr<Camera> m_Camera;

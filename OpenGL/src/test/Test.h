@@ -20,7 +20,9 @@ namespace test
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}	
-		virtual void LoadImage(GLuint* textureID, char const* filename){}
+
+	protected:
+		virtual int LoadImage(char const* filename) { return -1; }
 	};
 
 	class TestMenu : public Test

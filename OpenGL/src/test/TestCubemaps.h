@@ -17,7 +17,9 @@ namespace test
 		void OnRender() override;
 		void OnImGuiRender() override;
 		void OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset) override;
-		void LoadImage(GLuint* textureID, char const* filename) override;
+
+	protected:
+		int LoadImage(char const* filename) override;
 		
 	private:
 		std::unique_ptr<Shader> m_Shader;
@@ -32,6 +34,5 @@ namespace test
 
 	private:
 		int LoadCubemap(std::vector<std::string> faces);
-		int LoadImage(char const* filename);
 	};
 }

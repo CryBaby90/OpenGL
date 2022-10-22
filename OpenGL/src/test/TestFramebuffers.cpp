@@ -124,8 +124,8 @@ test::TestFramebuffers::TestFramebuffers()
 	//7	纹理
 	
 	//CubeTexture
-	LoadImage(&m_CubeTextureID, "res/textures/container.jpg");
-	LoadImage(&m_FloorTextureID, "res/textures/brickDiffuse.jpg");
+	m_CubeTextureID= LoadImage("res/textures/container.jpg");
+	m_FloorTextureID = LoadImage("res/textures/brickDiffuse.jpg");
 
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
 
@@ -298,13 +298,14 @@ void test::TestFramebuffers::OnProcessMouseMovement(GLfloat xoffset, GLfloat yof
 	m_Camera->OnProcessMouseMovement(xoffset, yoffset);
 }
 
-void test::TestFramebuffers::LoadImage(GLuint* textureID, char const* filename)
+int test::TestFramebuffers::LoadImage(char const* filename)
 {
-	GLCall(glGenTextures(1, textureID));
-	GLCall(glBindTexture(GL_TEXTURE_2D, *textureID));
+	unsigned int textureID;
+	GLCall(glGenTextures(1, &textureID));
+
 	//加载并生成纹理
 	GLint width, height, nrChannels;
-	stbi_set_flip_vertically_on_load(true);
+	//stbi_set_flip_vertically_on_load(true); //图文倒置
 	unsigned char* textureData = stbi_load(filename, &width, &height, &nrChannels, 0);
 	if (textureData)
 	{
@@ -316,6 +317,7 @@ void test::TestFramebuffers::LoadImage(GLuint* textureID, char const* filename)
 		else if (nrChannels == 4)
 			format = GL_RGBA;
 
+		GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, textureData));
 		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 
@@ -329,6 +331,8 @@ void test::TestFramebuffers::LoadImage(GLuint* textureID, char const* filename)
 		std::cout << "Failed to load texture1" << std::endl;
 	}
 	stbi_image_free(textureData);
+
+	return textureID;
 }
 
 void test::TestFramebuffers::OnUpdate(float deltaTime)

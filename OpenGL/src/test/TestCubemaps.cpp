@@ -141,7 +141,7 @@ test::TestCubemaps::TestCubemaps()
 
 	//7	纹理
 	//CubeTexture
-	m_CubemapTextureID = LoadImage("res/textures/container.jpg");
+	m_CubeTextureID = LoadImage("res/textures/container.jpg");
 	//LoadImage(&m_CubeTextureID, "res/textures/container.jpg");
 	m_CubemapTextureID = LoadCubemap(faces);
 
@@ -153,6 +153,8 @@ test::TestCubemaps::TestCubemaps()
 
 	m_CubemapsShader->Bind();
 	m_CubemapsShader->SetUniform1i("skybox", 0);
+
+	GLCall(glEnable(GL_DEPTH_TEST));
 }
 
 test::TestCubemaps::~TestCubemaps()
@@ -169,13 +171,14 @@ void test::TestCubemaps::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset
 	m_Camera->OnProcessMouseMovement(xoffset, yoffset);
 }
 
-void test::TestCubemaps::LoadImage(GLuint* textureID, char const* filename)
+int test::TestCubemaps::LoadImage(char const* filename)
 {
-	GLCall(glGenTextures(1, textureID));
-	GLCall(glBindTexture(GL_TEXTURE_2D, *textureID));
+	unsigned int textureID;
+	GLCall(glGenTextures(1, &textureID));
+	
 	//加载并生成纹理
 	GLint width, height, nrChannels;
-	stbi_set_flip_vertically_on_load(true);
+	//stbi_set_flip_vertically_on_load(true); //图文倒置
 	unsigned char* textureData = stbi_load(filename, &width, &height, &nrChannels, 0);
 	if (textureData)
 	{
@@ -187,11 +190,12 @@ void test::TestCubemaps::LoadImage(GLuint* textureID, char const* filename)
 		else if (nrChannels == 4)
 			format = GL_RGBA;
 
+		GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, textureData));
 		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT)); 
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)); 
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	}
@@ -200,6 +204,8 @@ void test::TestCubemaps::LoadImage(GLuint* textureID, char const* filename)
 		std::cout << "Failed to load texture1" << std::endl;
 	}
 	stbi_image_free(textureData);
+
+	return textureID;
 }
 
 int test::TestCubemaps::LoadCubemap(std::vector<std::string> faces)
@@ -230,43 +236,6 @@ int test::TestCubemaps::LoadCubemap(std::vector<std::string> faces)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	return textureID;
-}
-
-int test::TestCubemaps::LoadImage(char const* filename)
-{
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-
-	int width, height, nrComponents;
-	unsigned char* data = stbi_load(filename, &width, &height, &nrComponents, 0);
-	if (data)
-	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		stbi_image_free(data);
-	}
-	else
-	{
-		std::cout << "Texture failed to load at path: " << filename << std::endl;
-		stbi_image_free(data);
-	}
 
 	return textureID;
 }
