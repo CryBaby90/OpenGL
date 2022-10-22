@@ -237,11 +237,14 @@ test::TestStencilTesting::~TestStencilTesting()
 {
 	//×ÊÔ´ÊÍ·Å
 	delete m_Shader;
+	delete m_SingleColorShader;
 	GLCall(glDeleteVertexArrays(1, &m_CubeVAO));
 	GLCall(glDeleteBuffers(1, &m_CubeVBO));
 	GLCall(glDeleteVertexArrays(1, &m_PlaneVAO));
 	GLCall(glDeleteBuffers(1, &m_PlaneVBO));
-	//GLCall(glDeleteBuffers(1, &m_EBO));
+	
+	GLCall(glDisable(GL_STENCIL_TEST));
+	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
 }
 
 void test::TestStencilTesting::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)

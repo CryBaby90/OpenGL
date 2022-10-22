@@ -391,7 +391,7 @@ void test::TestFramebuffers::OnRender()
 	GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
 	m_ScreenShader->Bind();
-	m_Shader->SetUniform1i("screenTexture", 0);
+	m_ScreenShader->SetUniform1i("screenTexture", 0);
 	GLCall(glBindVertexArray(m_QuadVAO));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureColorbuffer));
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
