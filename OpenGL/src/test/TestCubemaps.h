@@ -17,6 +17,7 @@ namespace test
 		void OnRender() override;
 		void OnImGuiRender() override;
 		void OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset) override;
+		void OnProcessInput(GLFWwindow* window, GLfloat deltaTime) override;
 
 	protected:
 		int LoadImage(char const* filename) override;

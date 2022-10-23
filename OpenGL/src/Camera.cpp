@@ -57,6 +57,10 @@ void Camera::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
 		m_CameraPos -= glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * m_Speed * deltaTime;
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		m_CameraPos += glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * m_Speed * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		m_CameraPos += m_CameraUp * m_Speed * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		m_CameraPos -= m_CameraUp * m_Speed * deltaTime;
 }
 
 void Camera::SetFov(GLfloat fov)
