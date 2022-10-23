@@ -31,7 +31,7 @@ void Mesh::Draw(Shader &shader)
         else if (name == "texture_height")
             number = std::to_string(heightNr++);
 
-        shader.SetUniform1i(("material." + name + number).c_str(), i);
+        shader.SetUniform1i((name + number).c_str(), i);
         GLCall(glBindTexture(GL_TEXTURE_2D, textures[i].id));
     }
     

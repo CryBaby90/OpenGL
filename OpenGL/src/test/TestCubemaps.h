@@ -2,6 +2,7 @@
 #include "Test.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "Model.h"
 
 #include <glm/glm.hpp>
 
@@ -32,6 +33,7 @@ namespace test
 		GLuint m_CubeTextureID, m_CubemapTextureID;
 		glm::mat4 m_Model, m_View, m_Proj;
 		glm::vec3 m_ViewPos;
+		std::unique_ptr<Model> m_RealModel;
 
 	private:
 		int LoadCubemap(std::vector<std::string> faces);

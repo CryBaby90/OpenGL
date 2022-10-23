@@ -149,6 +149,8 @@ test::TestCubemaps::TestCubemaps()
 
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
 
+	m_RealModel = std::make_unique<Model>("res/obj/ReflectionObj/nanosuit.obj");
+
 	m_Shader->Bind();
 	//给shader里的变量指定插槽
 	//m_Shader->SetUniform1i("texture1", 0);
@@ -264,6 +266,7 @@ void test::TestCubemaps::OnRender()
 
 	m_Shader->Bind();
 	m_Model = glm::mat4(1.0f);
+	m_Model = glm::scale(m_Model, glm::vec3(0.1f, 0.1f, 0.1f));
 	m_View = m_Camera->GetViewMatrix();
 	m_Proj = m_Camera->GetProjMatrix(); 
 	m_Shader->SetUniformsMat4f("model", m_Model);
@@ -277,7 +280,8 @@ void test::TestCubemaps::OnRender()
 	//GLCall(glBindVertexArray(m_CubemapsVAO));
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, m_CubemapTextureID)); //反射 绑定CubemapTexture
-	GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
+	//GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
+	m_RealModel->Draw(*m_Shader);
 	GLCall(glBindVertexArray(0));
 
 	// draw skybox as last

@@ -33,7 +33,7 @@ void main()
     ²£Á§	1.52
     ×êÊ¯	2.42
     */
-    float ratio = 1.00 / 1.52;
+    float ratio = 2.42 / 1.52;
     R = refract(I, normalize(Normal), ratio);
     FragColor = vec4(texture(skybox, R).rgb, 1.0);
 }
