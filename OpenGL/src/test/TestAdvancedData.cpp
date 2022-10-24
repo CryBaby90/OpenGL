@@ -336,7 +336,6 @@ void test::TestAdvancedData::OnRender()
 	GLCall(glBindVertexArray(m_CubeVAO));
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_CubeTextureID));
-	//GLCall(glBindVertexArray(m_CubemapsVAO));
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, m_CubemapTextureID)); //反射 绑定CubemapTexture
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));

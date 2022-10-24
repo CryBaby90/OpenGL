@@ -1,4 +1,4 @@
-﻿#include "TestCubemaps.h"
+﻿#include "TestAdvancedGLSL.h"
 
 #include <stb_image/stb_image.h>
 
@@ -6,57 +6,55 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
 
-#define DISABLETEST
-
-test::TestCubemaps::TestCubemaps()
+test::TestAdvancedGLSL::TestAdvancedGLSL()
 	:m_Shader(nullptr), m_Camera(nullptr),
 	m_Model(glm::mat4(1.0f)), m_View(glm::mat4(1.0f)), m_Proj(glm::mat4(1.0f)),
 	m_ViewPos(0.0f, 0.0f, -3.0f)
 {
 	//在上下文之后
 	float cubeVertices[] = {
-	// positions        // tex Coords  //Normal
-	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		// positions          // texture Coords
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
-	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 	float skyboxVertices[] = {
 		// positions          
@@ -120,11 +118,9 @@ test::TestCubemaps::TestCubemaps()
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_CubeVBO));
 	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW));
 	GLCall(glEnableVertexAttribArray(0));
-	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0));
+	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0));
 	GLCall(glEnableVertexAttribArray(1));
-	GLCall(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))));
-	/*GLCall(glEnableVertexAttribArray(2));
-	GLCall(glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(5 * sizeof(float))));*/
+	GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))));
 	GLCall(glBindVertexArray(0));
 
 	// cubemps VAO
@@ -138,8 +134,8 @@ test::TestCubemaps::TestCubemaps()
 	GLCall(glBindVertexArray(0));
 
 	//6  着色器程序
-	m_Shader = std::make_unique<Shader>("res/shaders/Cubemaps/Vertex.Vshader", "res/shaders/Cubemaps/Fragment.Fshader");
-	m_CubemapsShader = std::make_unique<Shader>("res/shaders/Cubemaps/Cubemaps.Vshader", "res/shaders/Cubemaps/Cubemaps.Fshader");
+	m_Shader = std::make_unique<Shader>("res/shaders/AdvancedGLSL/Vertex.Vshader", "res/shaders/AdvancedGLSL/Fragment.Fshader");
+	m_CubemapsShader = std::make_unique<Shader>("res/shaders/AdvancedGLSL/Cubemaps.Vshader", "res/shaders/AdvancedGLSL/Cubemaps.Fshader");
 
 	//7	纹理
 	//CubeTexture
@@ -149,38 +145,64 @@ test::TestCubemaps::TestCubemaps()
 
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
 
-	m_RealModel = std::make_unique<Model>("res/obj/ReflectionObj/nanosuit.obj");
-
 	m_Shader->Bind();
 	//给shader里的变量指定插槽
-	//m_Shader->SetUniform1i("texture1", 0);
+	m_Shader->SetUniform1i("texture1", 0);
 
 	m_CubemapsShader->Bind();
 	m_CubemapsShader->SetUniform1i("skybox", 0);
 
 	GLCall(glEnable(GL_DEPTH_TEST));
+
+	GLCall(glEnable(GL_PROGRAM_POINT_SIZE));
+
+	//我们将顶点着色器的Uniform块设置为绑定点0。注意我们需要对每个着色器都设置一遍
+	unsigned int uniformBlockIndexCube = glGetUniformBlockIndex(m_Shader->GetShaderID(), "Matrices");
+	unsigned int uniformBlockIndexCubeMaps = glGetUniformBlockIndex(m_CubemapsShader->GetShaderID(), "Matrices");
+	GLCall(glUniformBlockBinding(m_Shader->GetShaderID(), uniformBlockIndexCube, 0));
+	GLCall(glUniformBlockBinding(m_CubemapsShader->GetShaderID(), uniformBlockIndexCubeMaps, 0));
+
+	//创建Uniform缓冲对象本身，并将其绑定到绑定点0
+	GLCall(glGenBuffers(1, &m_UboMatrices));
+
+	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, m_UboMatrices));
+	GLCall(glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW));
+	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
+
+	GLCall(glBindBufferRange(GL_UNIFORM_BUFFER, 0, m_UboMatrices, 0, 2 * sizeof(glm::mat4)));
+
+	//填充数据
+	m_Proj = m_Camera->GetProjMatrix();
+	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, m_UboMatrices));
+	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(m_Proj)));
+	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
+	/*m_View = m_Camera->GetViewMatrix();
+	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, m_UboMatrices));
+	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(m_View)));
+	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));*/
 }
 
-test::TestCubemaps::~TestCubemaps()
+test::TestAdvancedGLSL::~TestAdvancedGLSL()
 {
 	//资源释放
 	GLCall(glDeleteVertexArrays(1, &m_CubeVAO));
 	GLCall(glDeleteBuffers(1, &m_CubeVBO));
 	GLCall(glDeleteVertexArrays(1, &m_CubemapsVAO));
 	GLCall(glDeleteBuffers(1, &m_CubemapsVBO));
+	GLCall(glDeleteBuffers(1, &m_UboMatrices));
 }
 
-void test::TestCubemaps::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)
+void test::TestAdvancedGLSL::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)
 {
 	m_Camera->OnProcessMouseMovement(xoffset, yoffset);
 }
 
-void test::TestCubemaps::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
+void test::TestAdvancedGLSL::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
 {
 	m_Camera->OnProcessInput(window, deltaTime);
 }
 
-int test::TestCubemaps::LoadImage(char const* filename)
+int test::TestAdvancedGLSL::LoadImage(char const* filename)
 {
 	unsigned int textureID;
 	GLCall(glGenTextures(1, &textureID));
@@ -217,7 +239,7 @@ int test::TestCubemaps::LoadImage(char const* filename)
 	return textureID;
 }
 
-int test::TestCubemaps::LoadCubemap(std::vector<std::string> faces)
+int test::TestAdvancedGLSL::LoadCubemap(std::vector<std::string> faces)
 {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
@@ -249,7 +271,7 @@ int test::TestCubemaps::LoadCubemap(std::vector<std::string> faces)
 	return textureID;
 }
 
-void test::TestCubemaps::OnUpdate(float deltaTime)
+void test::TestAdvancedGLSL::OnUpdate(float deltaTime)
 {
 	/*m_Model = glm::mat4(1.0f);
 	m_Model = glm::rotate(m_Model, deltaTime * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
@@ -258,7 +280,7 @@ void test::TestCubemaps::OnUpdate(float deltaTime)
 	m_View = glm::translate(m_View, m_ViewPos);*/
 }
 
-void test::TestCubemaps::OnRender()
+void test::TestAdvancedGLSL::OnRender()
 {
 	GLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -266,21 +288,17 @@ void test::TestCubemaps::OnRender()
 
 	m_Shader->Bind();
 	m_Model = glm::mat4(1.0f);
-	m_Model = glm::scale(m_Model, glm::vec3(0.1f, 0.1f, 0.1f));
 	m_View = m_Camera->GetViewMatrix();
-	m_Proj = m_Camera->GetProjMatrix(); 
+	//m_Proj = m_Camera->GetProjMatrix();
 	m_Shader->SetUniformsMat4f("model", m_Model);
 	m_Shader->SetUniformsMat4f("view", m_View);
-	m_Shader->SetUniformsMat4f("proj", m_Proj);
-	m_Shader->SetUniforms3f("cameraPos", m_Camera->GetPos());
+	//m_Shader->SetUniformsMat4f("proj", m_Proj);
+
 	// cubes
 	GLCall(glBindVertexArray(m_CubeVAO));
 	GLCall(glActiveTexture(GL_TEXTURE0));
-	//GLCall(glBindTexture(GL_TEXTURE_2D, m_CubeTextureID));
-	GLCall(glActiveTexture(GL_TEXTURE0));
-	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, m_CubemapTextureID)); //反射 绑定CubemapTexture
-	//GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
-	m_RealModel->Draw(*m_Shader);
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_CubeTextureID));
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
 	GLCall(glBindVertexArray(0));
 
 	// draw skybox as last
@@ -288,7 +306,7 @@ void test::TestCubemaps::OnRender()
 	m_CubemapsShader->Bind();
 	m_View = glm::mat4(glm::mat3(m_Camera->GetViewMatrix())); // remove translation from the view matrix
 	m_CubemapsShader->SetUniformsMat4f("view", m_View);
-	m_CubemapsShader->SetUniformsMat4f("proj", m_Proj);
+	//m_CubemapsShader->SetUniformsMat4f("proj", m_Proj);
 	// skybox cube
 	GLCall(glBindVertexArray(m_CubemapsVAO));
 	GLCall(glActiveTexture(GL_TEXTURE0));
@@ -298,7 +316,7 @@ void test::TestCubemaps::OnRender()
 	GLCall(glDepthFunc(GL_LESS));
 }
 
-void test::TestCubemaps::OnImGuiRender()
+void test::TestAdvancedGLSL::OnImGuiRender()
 {
 	//ImGui::SliderFloat3("ViewPos", &m_ViewPos.x, -6.0f, 6.0f);
 }
