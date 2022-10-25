@@ -9,25 +9,34 @@
 Shader::Shader(const std::string& vertexFilepath, const std::string& fragmentFilepath)
 	:m_ShaderID(0), m_VertexFilepath(vertexFilepath), m_FragmentFilepath(fragmentFilepath)
 {
-	ShaderSource source = ParseShader(vertexFilepath, fragmentFilepath);
-	m_ShaderID = CreateShader(source.VertexSource, source.FragmentSource);
+	ShaderSource source = ParseShader(vertexFilepath, fragmentFilepath, m_NullPath);
+	m_ShaderID = CreateShader(source.VertexSource, source.FragmentSource, source.GeometrySource);
 }
+
+Shader::Shader(const std::string& vertexFilepath, const std::string& fragmentFilepath, const std::string& geometryFilepath)
+	:m_ShaderID(0), m_VertexFilepath(vertexFilepath), m_FragmentFilepath(fragmentFilepath), m_geometryFilepath(geometryFilepath)
+{
+	ShaderSource source = ParseShader(vertexFilepath, fragmentFilepath, geometryFilepath);
+	m_ShaderID = CreateShader(source.VertexSource, source.FragmentSource, source.GeometrySource);
+}
+
 
 Shader::~Shader()
 {
 	GLCall(glDeleteProgram(m_ShaderID));
 }
 
-ShaderSource Shader::ParseShader(const std::string& vertexFilepath, const std::string& fragmentFilepath)
+ShaderSource Shader::ParseShader(const std::string& vertexFilepath, const std::string& fragmentFilepath, const std::string& geometryFilepath)
 {
 	enum class ShaderType
 	{
 		NONE = -1,
 		VERTEX = 0,
 		FRAGMENT = 1,
+		GEOMETRY = 2,
 	};
 	std::string line;
-	std::stringstream ss[2];
+	std::stringstream ss[3];
 	ShaderType type = ShaderType::NONE;
 
 	{
@@ -40,6 +49,8 @@ ShaderSource Shader::ParseShader(const std::string& vertexFilepath, const std::s
 					type = ShaderType::VERTEX;
 				else if (line.find("fragment") != ::std::string::npos)
 					type = ShaderType::FRAGMENT;
+				else if (line.find("geometry") != ::std::string::npos)
+					type = ShaderType::GEOMETRY;
 			}
 			else
 				ss[(int)type] << line << "\n";
@@ -55,13 +66,38 @@ ShaderSource Shader::ParseShader(const std::string& vertexFilepath, const std::s
 					type = ShaderType::VERTEX;
 				else if (line.find("fragment") != ::std::string::npos)
 					type = ShaderType::FRAGMENT;
+				else if (line.find("geometry") != ::std::string::npos)
+					type = ShaderType::GEOMETRY;
 			}
 			else
 				ss[(int)type] << line << "\n";
 		}
 	}
-
-	return { ss[0].str(), ss[1].str() };
+	{
+		if (geometryFilepath != m_NullPath)
+		{
+			::std::ifstream stream(geometryFilepath);
+			while (getline(stream, line))
+			{
+				if (line.find("#shader") != ::std::string::npos)
+				{
+					if (line.find("vertex") != ::std::string::npos)
+						type = ShaderType::VERTEX;
+					else if (line.find("fragment") != ::std::string::npos)
+						type = ShaderType::FRAGMENT;
+					else if (line.find("geometry") != ::std::string::npos)
+						type = ShaderType::GEOMETRY;
+				}
+				else
+					ss[(int)type] << line << "\n";
+			}
+		}
+		else
+		{
+			return { ss[0].str(), ss[1].str(), m_NullPath };
+		}
+	}
+	return { ss[0].str(), ss[1].str(), ss[2].str()};
 }
 
 unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
@@ -88,13 +124,18 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	return id;
 }
 
-unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
+unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader, const std::string& geometryShader)
 {
 	GLCall(unsigned int shaderProgram = glCreateProgram());
 	unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
 	unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 	GLCall(glAttachShader(shaderProgram, vs));
 	GLCall(glAttachShader(shaderProgram, fs));
+	if (geometryShader != m_NullPath)
+	{
+		unsigned int gs = CompileShader(GL_GEOMETRY_SHADER, geometryShader);
+		GLCall(glAttachShader(shaderProgram, gs));
+	}
 	GLCall(glLinkProgram(shaderProgram));
 
 	int result;
