@@ -25,6 +25,7 @@
 #include "test/TestCubemaps.h"
 #include "test/TestAdvancedData.h"
 #include "test/TestAdvancedGLSL.h"
+#include "test/TestGeometryShader.h"
 
 int main()
 {
@@ -115,6 +116,7 @@ int main()
 	testMenu->RegisterTest<::test::TestCubemaps>("Cubemaps");
 	testMenu->RegisterTest<::test::TestAdvancedData>("AdvancedData");
 	testMenu->RegisterTest<::test::TestAdvancedGLSL>("TestAdvancedGLSL");
+	testMenu->RegisterTest<::test::TestGeometryShader>("TestGeometryShader");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
