@@ -25,7 +25,9 @@ namespace test
 		
 	private:
 		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<Shader> m_NormalShader;
 		std::unique_ptr<Camera> m_Camera;
+		std::unique_ptr<Model> m_Model;
 		GLuint m_CubeVAO, m_CubeVBO;
 
 	private:

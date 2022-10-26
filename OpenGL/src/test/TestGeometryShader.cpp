@@ -7,14 +7,21 @@
 #include <map>
 
 test::TestGeometryShader::TestGeometryShader()
-	:m_Shader(nullptr), m_Camera(nullptr)
+	:m_Shader(nullptr), m_NormalShader(nullptr), m_Camera(nullptr), m_Model(nullptr)
 {
 	//在上下文之后
+	//float points[] = {
+	//-0.5f,  0.5f, // 左上
+	// 0.5f,  0.5f, // 右上
+	// 0.5f, -0.5f, // 右下
+	//-0.5f, -0.5f  // 左下
+	//};
+
 	float points[] = {
-	-0.5f,  0.5f, // 左上
-	 0.5f,  0.5f, // 右上
-	 0.5f, -0.5f, // 右下
-	-0.5f, -0.5f  // 左下
+		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // 左上
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // 右上
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // 右下
+		-0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // 左下
 	};
 
 	//  VAO
@@ -24,13 +31,17 @@ test::TestGeometryShader::TestGeometryShader()
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_CubeVBO));
 	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW));
 	GLCall(glEnableVertexAttribArray(0));
-	GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0));
+	GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
 	GLCall(glBindVertexArray(0));
 
 	//6  着色器程序
-	m_Shader = std::make_unique<Shader>("res/shaders/GeometryShader/Vertex.Vshader", "res/shaders/GeometryShader/Fragment.Fshader", "res/shaders/GeometryShader/Geometry.Gshader");
-	//m_Shader = std::make_unique<Shader>("res/shaders/GeometryShader/Vertex.Vshader", "res/shaders/GeometryShader/Fragment.Fshader");
+	m_Shader = std::make_unique<Shader>("res/shaders/GeometryShader/Vertex.Vshader", "res/shaders/GeometryShader/Fragment.Fshader");
+	m_NormalShader = std::make_unique<Shader>("res/shaders/GeometryShader/NormalShaderVertex.Vshader", "res/shaders/GeometryShader/NormalShaderFragment.Fshader", "res/shaders/GeometryShader/Geometry.Gshader");
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
+
+	m_Model = std::make_unique<Model>("res/obj/ReflectionObj/nanosuit.obj");
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 }
@@ -132,9 +143,23 @@ void test::TestGeometryShader::OnRender()
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 	m_Shader->Bind();
+	glm::mat4 proj = m_Camera->GetProjMatrix();
+	glm::mat4 view = m_Camera->GetViewMatrix();;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+	m_Shader->SetUniformsMat4f("proj", proj);
+	m_Shader->SetUniformsMat4f("view", view);
+	m_Shader->SetUniformsMat4f("model", model);
+	//m_Shader->SetUniform1f("time", static_cast<float>(glfwGetTime()));
+	//GLCall(glBindVertexArray(m_CubeVAO));
+	//glDrawArrays(GL_POINTS, 0, 4);
+	m_Model->Draw(*m_Shader);
 
-	GLCall(glBindVertexArray(m_CubeVAO));
-	glDrawArrays(GL_POINTS, 0, 4);
+	m_NormalShader->Bind();
+	m_NormalShader->SetUniformsMat4f("proj", proj);
+	m_NormalShader->SetUniformsMat4f("view", view);
+	m_NormalShader->SetUniformsMat4f("model", model);
+	m_Model->Draw(*m_NormalShader);
 	GLCall(glBindVertexArray(0));
 }
 
