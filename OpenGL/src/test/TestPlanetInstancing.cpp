@@ -27,6 +27,9 @@ test::TestPlanetInstancing::TestPlanetInstancing()
 	glBindBuffer(GL_ARRAY_BUFFER, m_InstanceVBO);
 	glBufferData(GL_ARRAY_BUFFER, m_Amount * sizeof(glm::mat4), &m_ModelMatrices[0], GL_STATIC_DRAW);
 
+	//当我们顶点属性的类型大于vec4时，就要多进行一步处理了
+	//顶点属性最大允许的数据大小等于一个vec4
+	//因为一个mat4本质上是4个vec4，我们需要为这个矩阵预留4个顶点属性
 	for (unsigned int i = 0; i < m_Rock->meshes.size(); i++)
 	{
 		unsigned int VAO = m_Rock->meshes[i].GetVAO();
