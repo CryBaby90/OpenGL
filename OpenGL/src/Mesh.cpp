@@ -78,6 +78,11 @@ void Mesh::Draw(Shader* shader)
     glActiveTexture(GL_TEXTURE0);
 }
 
+unsigned int Mesh::GetVAO()
+{
+    return this->m_VAO;
+}
+
 void Mesh::setupMesh()
 {
     GLCall(glGenVertexArrays(1, &m_VAO));

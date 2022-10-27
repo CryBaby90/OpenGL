@@ -8,18 +8,47 @@
 #include <sstream>
 
 test::TestPlanetInstancing::TestPlanetInstancing()
-	:m_Shader(nullptr), m_Camera(nullptr), m_Planet(nullptr), m_Rock(nullptr),
+	:m_Shader(nullptr), m_InstanceShader(nullptr), m_Camera(nullptr), 
+	m_Planet(nullptr), m_Rock(nullptr),
 	m_ModelMatrices(nullptr)
 {
 	//在上下文之后
 	InitModelMatrices();
 
-	//6  着色器程序
 	m_Shader = std::make_unique<Shader>("res/shaders/PlanetInstancing/Vertex.Vshader", "res/shaders/PlanetInstancing/Fragment.Fshader");
-	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 55.0f));
+	m_InstanceShader = std::make_unique<Shader>("res/shaders/PlanetInstancing/InstanceVertex.Vshader", "res/shaders/PlanetInstancing/Fragment.Fshader");
+	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 3.0f, 55.0f));
 
 	m_Planet = std::make_unique<Model>("res/obj/Planet/planet.obj");
 	m_Rock = std::make_unique<Model>("res/obj/Planet/Rock/rock.obj");
+
+	// 顶点缓冲对象
+	glGenBuffers(1, &m_InstanceVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_InstanceVBO);
+	glBufferData(GL_ARRAY_BUFFER, m_Amount * sizeof(glm::mat4), &m_ModelMatrices[0], GL_STATIC_DRAW);
+
+	for (unsigned int i = 0; i < m_Rock->meshes.size(); i++)
+	{
+		unsigned int VAO = m_Rock->meshes[i].GetVAO();
+		glBindVertexArray(VAO);
+		// 顶点属性
+		GLsizei vec4Size = sizeof(glm::vec4);
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(vec4Size));
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+		glVertexAttribDivisor(3, 1);
+		glVertexAttribDivisor(4, 1);
+		glVertexAttribDivisor(5, 1);
+		glVertexAttribDivisor(6, 1);
+
+		glBindVertexArray(0);
+	}
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 }
@@ -27,8 +56,7 @@ test::TestPlanetInstancing::TestPlanetInstancing()
 test::TestPlanetInstancing::~TestPlanetInstancing()
 {
 	//资源释放
-	GLCall(glDeleteVertexArrays(1, &m_CubeVAO));
-	GLCall(glDeleteBuffers(1, &m_CubeVBO));
+	GLCall(glDeleteBuffers(1, &m_InstanceVBO));
 
 	delete m_ModelMatrices;
 }
@@ -159,6 +187,7 @@ void test::TestPlanetInstancing::OnRender()
 	glm::mat4 view = m_Camera->GetViewMatrix();;
 	m_Shader->SetUniformsMat4f("projection", projection);
 	m_Shader->SetUniformsMat4f("view", view);
+	
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
@@ -166,11 +195,21 @@ void test::TestPlanetInstancing::OnRender()
 	m_Shader->SetUniformsMat4f("model", model);
     m_Planet->Draw(*m_Shader);
 
+	m_InstanceShader->Bind();
+	m_InstanceShader->SetUniformsMat4f("projection", projection);
+	m_InstanceShader->SetUniformsMat4f("view", view);
 	// 绘制小行星
-	for (unsigned int i = 0; i < m_Amount; i++)
+	/*for (unsigned int i = 0; i < m_Amount; i++)
 	{
-		m_Shader->SetUniformsMat4f("model", m_ModelMatrices[i]);
-		m_Rock->Draw(*m_Shader);
+		m_InstanceShader->SetUniformsMat4f("model", m_ModelMatrices[i]);
+		m_Rock->Draw(*m_InstanceShader);
+	}*/
+	for (unsigned int i = 0; i < m_Rock->meshes.size(); i++)
+	{
+		glBindVertexArray(m_Rock->meshes[i].GetVAO());
+		glDrawElementsInstanced(
+			GL_TRIANGLES, m_Rock->meshes[i].indices.size(), GL_UNSIGNED_INT, 0, m_Amount
+		);
 	}
 }
 

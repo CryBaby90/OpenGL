@@ -74,6 +74,7 @@ test::TestInstancing::~TestInstancing()
 	//资源释放
 	GLCall(glDeleteVertexArrays(1, &m_CubeVAO));
 	GLCall(glDeleteBuffers(1, &m_CubeVBO));
+	GLCall(glDeleteBuffers(1, &m_InstanceVBO));
 }
 
 void test::TestInstancing::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)

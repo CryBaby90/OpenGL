@@ -25,13 +25,13 @@ namespace test
 		
 	private:
 		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<Shader> m_InstanceShader;
 		std::unique_ptr<Camera> m_Camera;
 		std::unique_ptr<Model> m_Planet;
 		std::unique_ptr<Model> m_Rock;
 		glm::mat4* m_ModelMatrices;
-		GLuint m_CubeVAO, m_CubeVBO;
 		GLuint m_InstanceVBO;
-		unsigned int m_Amount = 3000;
+		unsigned int m_Amount = 20000;
 
 	private:
 		int LoadCubemap(std::vector<std::string> faces);
