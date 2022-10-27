@@ -27,6 +27,7 @@
 #include "test/TestAdvancedGLSL.h"
 #include "test/TestGeometryShader.h"
 #include "test/TestInstancing.h"
+#include "test/TestPlanetInstancing.h"
 
 int main()
 {
@@ -119,6 +120,7 @@ int main()
 	testMenu->RegisterTest<::test::TestAdvancedGLSL>("AdvancedGLSL");
 	testMenu->RegisterTest<::test::TestGeometryShader>("GeometryShader");
 	testMenu->RegisterTest<::test::TestInstancing>("Instancing");
+	testMenu->RegisterTest<::test::TestPlanetInstancing>("PlanetInstancing");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
