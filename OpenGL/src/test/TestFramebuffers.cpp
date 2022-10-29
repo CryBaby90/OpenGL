@@ -1,4 +1,5 @@
 ﻿#include "TestFramebuffers.h"
+#include "Global.h"
 
 #include <stb_image/stb_image.h>
 
@@ -242,7 +243,7 @@ test::TestFramebuffers::TestFramebuffers()
 	GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_CubeTextureID, 0));
 	*/
 
-	//创建渲染缓冲对象
+	//3 创建渲染缓冲对象
 	GLCall(glGenRenderbuffers(1, &m_RBO));
 	GLCall(glBindRenderbuffer(GL_RENDERBUFFER, m_RBO));
 	/*
@@ -251,7 +252,7 @@ test::TestFramebuffers::TestFramebuffers()
 	  当我们不需要从这些缓冲中采样的时候，通常都会选择渲染缓冲对象，因为它会更优化一点。
 	  创建一个深度和模板渲染缓冲对象可以通过调用glRenderbufferStorage函数来完成：
 	*/
-	GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600));
+	GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT));
 	// 附加这个渲染缓冲对象
 	GLCall(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RBO));
 

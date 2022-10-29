@@ -28,6 +28,7 @@
 #include "test/TestGeometryShader.h"
 #include "test/TestInstancing.h"
 #include "test/TestPlanetInstancing.h"
+#include "test/TestAntiAliasing.h"
 
 int main()
 {
@@ -121,6 +122,7 @@ int main()
 	testMenu->RegisterTest<::test::TestGeometryShader>("GeometryShader");
 	testMenu->RegisterTest<::test::TestInstancing>("Instancing");
 	testMenu->RegisterTest<::test::TestPlanetInstancing>("PlanetInstancing");
+	testMenu->RegisterTest<::test::TestAntiAliasing>("AntiAliasing");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
