@@ -29,6 +29,7 @@
 #include "test/TestInstancing.h"
 #include "test/TestPlanetInstancing.h"
 #include "test/TestAntiAliasing.h"
+#include "test/TestAdvancedLighting.h"
 
 int main()
 {
@@ -123,6 +124,7 @@ int main()
 	testMenu->RegisterTest<::test::TestInstancing>("Instancing");
 	testMenu->RegisterTest<::test::TestPlanetInstancing>("PlanetInstancing");
 	testMenu->RegisterTest<::test::TestAntiAliasing>("AntiAliasing");
+	testMenu->RegisterTest<::test::TestAdvancedLighting>("AdvancedLighting");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);

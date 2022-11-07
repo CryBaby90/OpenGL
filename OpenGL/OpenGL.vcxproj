@@ -104,6 +104,7 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\test\TestAdvancedData.cpp" />
     <ClCompile Include="src\test\TestAdvancedGLSL.cpp" />
+    <ClCompile Include="src\test\TestAdvancedLighting.cpp" />
     <ClCompile Include="src\test\TestAntiAliasing.cpp" />
     <ClCompile Include="src\test\TestBaseLight.cpp" />
     <ClCompile Include="src\test\TestBlending.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="src\include\Shader.h" />
     <ClInclude Include="src\test\TestAdvancedData.h" />
     <ClInclude Include="src\test\TestAdvancedGLSL.h" />
+    <ClInclude Include="src\test\TestAdvancedLighting.h" />
     <ClInclude Include="src\test\TestAntiAliasing.h" />
     <ClInclude Include="src\test\TestBaseLight.h" />
     <ClInclude Include="src\test\TestBlending.h" />
