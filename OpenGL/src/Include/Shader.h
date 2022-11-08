@@ -44,6 +44,8 @@ public:
 	void SetUniformsMat3f(const std::string& name, const glm::mat3& matrix);
 	void SetUniformsMat4f(const std::string& name, const glm::mat4& matrix);
 
+	void SetUniforms3fv(const std::string& name, const GLsizei count, const GLfloat* value);
+
 private:
 	ShaderSource ParseShader(const std::string& vertexFilepath, const std::string& fragmentFilepath, const std::string& geometryFilepath);
 	unsigned int CompileShader(unsigned int type, const std::string& source);

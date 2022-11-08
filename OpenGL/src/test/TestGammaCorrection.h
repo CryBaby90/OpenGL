@@ -8,11 +8,11 @@
 
 namespace test
 {
-	class TestAdvancedLighting : public Test
+	class TestGammaCorrection : public Test
 	{
 	public:
-		TestAdvancedLighting();
-		~TestAdvancedLighting();
+		TestGammaCorrection();
+		~TestGammaCorrection();
 
 		void OnUpdate(float deltaTime) override;
 		void OnRender() override;
@@ -27,9 +27,24 @@ namespace test
 		std::unique_ptr<Shader> m_Shader;
 		std::unique_ptr<Camera> m_Camera;
 		GLuint m_FloorTexture;
+		GLuint m_FloorTextureGammaCorrected;
 		GLuint m_CubeVAO, m_CubeVBO;
 		glm::mat4 m_Model, m_View, m_Proj;
-		bool m_Blinn = false;
-		bool m_BlinnKeyPressed = false;
+		glm::vec3 m_LightPositions[4] = {
+			glm::vec3(-3.0f, 0.0f, 0.0f),
+			glm::vec3(-1.0f, 0.0f, 0.0f),
+			glm::vec3(1.0f, 0.0f, 0.0f),
+			glm::vec3(3.0f, 0.0f, 0.0f)
+		};;
+		glm::vec3 m_LightColors[4] = {
+			glm::vec3(0.25),
+			glm::vec3(0.50),
+			glm::vec3(0.75),
+			glm::vec3(1.00)
+		};;
+		bool m_GammaEnabled = false;
+		bool m_GammaKeyPressed = false;
+
+		int LoadImage(char const* filename, bool gammaCorrection);
 	};
 }

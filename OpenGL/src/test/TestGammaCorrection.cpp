@@ -1,4 +1,4 @@
-﻿#include "TestAdvancedLighting.h"
+﻿#include "TestGammaCorrection.h"
 #include "Global.h"
 
 #include <stb_image/stb_image.h>
@@ -8,7 +8,7 @@
 #include <map>
 #include <sstream>
 
-test::TestAdvancedLighting::TestAdvancedLighting()
+test::TestGammaCorrection::TestGammaCorrection()
 	:m_Shader(nullptr), m_Camera(nullptr)
 {
 	//在上下文之后
@@ -38,47 +38,48 @@ test::TestAdvancedLighting::TestAdvancedLighting()
 	GLCall(glBindVertexArray(0));
 
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
-	m_FloorTexture = LoadImage("res/textures/wood.png");
+	m_FloorTexture = LoadImage("res/textures/wood.png", false);
+	m_FloorTextureGammaCorrected = LoadImage("res/textures/wood.png", true);
 
 	//6  着色器程序
-	m_Shader = std::make_unique<Shader>("res/shaders/AdvancedLighting/Vertex.Vshader", "res/shaders/AdvancedLighting/Fragment.Fshader");
+	m_Shader = std::make_unique<Shader>("res/shaders/GammaCorrection/Vertex.Vshader", "res/shaders/GammaCorrection/Fragment.Fshader");
 	m_Shader->Bind();
 	m_Shader->SetUniform1i("floorTexture", 0);
 	m_Shader->Unbind();
 }
 
-test::TestAdvancedLighting::~TestAdvancedLighting()
+test::TestGammaCorrection::~TestGammaCorrection()
 {
 	//资源释放
 	GLCall(glDeleteVertexArrays(1, &m_CubeVAO));
 	GLCall(glDeleteBuffers(1, &m_CubeVBO));
 }
 
-void test::TestAdvancedLighting::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)
+void test::TestGammaCorrection::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)
 {
 	m_Camera->OnProcessMouseMovement(xoffset, yoffset);
 }
 
-void test::TestAdvancedLighting::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
+void test::TestGammaCorrection::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
 {
 	m_Camera->OnProcessInput(window, deltaTime);
 
-	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && !m_BlinnKeyPressed)
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !m_GammaKeyPressed)
 	{
-		m_Blinn = !m_Blinn;
-		m_BlinnKeyPressed = true;
+		m_GammaEnabled = !m_GammaEnabled;
+		m_GammaKeyPressed = true;
 	}
-	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_RELEASE)
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
 	{
-		m_BlinnKeyPressed = false;
+		m_GammaKeyPressed = false;
 	}
 }
 
-int test::TestAdvancedLighting::LoadImage(char const* filename)
+int test::TestGammaCorrection::LoadImage(char const* filename)
 {
 	unsigned int textureID;
 	GLCall(glGenTextures(1, &textureID));
-	
+
 	//加载并生成纹理
 	GLint width, height, nrChannels;
 	//stbi_set_flip_vertically_on_load(true); //图文倒置
@@ -97,7 +98,7 @@ int test::TestAdvancedLighting::LoadImage(char const* filename)
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, textureData));
 		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)); 
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
@@ -111,12 +112,58 @@ int test::TestAdvancedLighting::LoadImage(char const* filename)
 	return textureID;
 }
 
-void test::TestAdvancedLighting::OnUpdate(float deltaTime)
+int test::TestGammaCorrection::LoadImage(char const* filename, bool gammaCorrection)
 {
-	
+	unsigned int textureID;
+	GLCall(glGenTextures(1, &textureID));
+
+	//加载并生成纹理
+	GLint width, height, nrChannels;
+	//stbi_set_flip_vertically_on_load(true); //图文倒置
+	unsigned char* textureData = stbi_load(filename, &width, &height, &nrChannels, 0);
+	if (textureData)
+	{
+		GLenum internalFormat;
+		GLenum dataFormat;
+		if (nrChannels == 1)
+		{
+			internalFormat = dataFormat = GL_RED;
+		}
+		else if (nrChannels == 3)
+		{
+			internalFormat = gammaCorrection ? GL_SRGB : GL_RGB;
+			dataFormat = GL_RGB;
+		}
+		else if (nrChannels == 4)
+		{
+			internalFormat = gammaCorrection ? GL_SRGB_ALPHA : GL_RGBA;
+			dataFormat = GL_RGBA;
+		}
+
+		GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, textureData));
+		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
+
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+	}
+	else
+	{
+		std::cout << "Failed to load texture1" << std::endl;
+	}
+	stbi_image_free(textureData);
+
+	return textureID;
 }
 
-void test::TestAdvancedLighting::OnRender()
+void test::TestGammaCorrection::OnUpdate(float deltaTime)
+{
+
+}
+
+void test::TestGammaCorrection::OnRender()
 {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -126,22 +173,22 @@ void test::TestAdvancedLighting::OnRender()
 	m_Shader->Bind();
 	m_View = m_Camera->GetViewMatrix();
 	m_Proj = m_Camera->GetProjMatrix();
-	
-	m_Shader->SetUniforms3f("viewPos", m_Camera->GetPos());
-	m_Shader->SetUniforms3f("lightPos", lightPos);
-	m_Shader->SetUniform1i("blinn", m_Blinn);
-
 	m_Shader->SetUniformsMat4f("view", m_View);
 	m_Shader->SetUniformsMat4f("projection", m_Proj);
+
+	m_Shader->SetUniforms3fv("lightPositions", 4, &m_LightPositions[0][0]);
+	m_Shader->SetUniforms3fv("lightColors", 4, &m_LightColors[0][0]);
+
+	m_Shader->SetUniforms3f("viewPos", m_Camera->GetPos());
+	m_Shader->SetUniform1i("gamma", m_GammaEnabled);
+
 	glBindVertexArray(m_CubeVAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_FloorTexture);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	std::cout << (m_Blinn ? "Blinn-Phong" : "Phong") << std::endl;
 }
 
-void test::TestAdvancedLighting::OnImGuiRender()
+void test::TestGammaCorrection::OnImGuiRender()
 {
 	//ImGui::SliderFloat3("ViewPos", &m_ViewPos.x, -6.0f, 6.0f);
 }

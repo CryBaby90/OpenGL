@@ -115,6 +115,7 @@
     <ClCompile Include="src\test\TestDiffuseMap.cpp" />
     <ClCompile Include="src\test\TestFaceCulling.cpp" />
     <ClCompile Include="src\test\TestFramebuffers.cpp" />
+    <ClCompile Include="src\test\TestGammaCorrection.cpp" />
     <ClCompile Include="src\test\TestGeometryShader.cpp" />
     <ClCompile Include="src\test\TestInstancing.cpp" />
     <ClCompile Include="src\test\TestLightCasters.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="src\test\TestDiffuseMap.h" />
     <ClInclude Include="src\test\TestFaceCulling.h" />
     <ClInclude Include="src\test\TestFramebuffers.h" />
+    <ClInclude Include="src\test\TestGammaCorrection.h" />
     <ClInclude Include="src\test\TestGeometryShader.h" />
     <ClInclude Include="src\test\TestInstancing.h" />
     <ClInclude Include="src\test\TestLightCasters.h" />
