@@ -9,7 +9,8 @@
 #include <sstream>
 
 test::TestShadowMapping::TestShadowMapping()
-	:m_Shader(nullptr), m_Camera(nullptr), m_DepthMapShader(nullptr)
+	:m_QuadShader(nullptr), m_Camera(nullptr), m_SimpleDepthShader(nullptr), m_DepthMapShader(nullptr),
+	m_LightPos(-2.0f, 4.0f, -1.0f)
 {
 	//在上下文之后
 	float planeVertices[] = {
@@ -51,8 +52,12 @@ test::TestShadowMapping::TestShadowMapping()
 		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+	//宁可让所有超出深度贴图的坐标的深度范围是1.0，这样超出的坐标将永远不在阴影之中
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER));
+	//储存一个边框颜色，然后把深度贴图的纹理环绕选项设置为GL_CLAMP_TO_BORDER
+	GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor));
 
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_DepthMapFBO));
 	GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthMap, 0));
@@ -64,17 +69,24 @@ test::TestShadowMapping::TestShadowMapping()
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 
 	// 着色器程序
-	m_Shader = std::make_unique<Shader>("res/shaders/ShadowMapping/Vertex.Vshader", "res/shaders/ShadowMapping/Fragment.Fshader");
-	m_Shader->Bind();
-	m_Shader->SetUniform1i("depthMap", 0);
-	m_Shader->Unbind();
+	//画布贴图
+	m_QuadShader = std::make_unique<Shader>("res/shaders/ShadowMapping/QuadVertex.Vshader", "res/shaders/ShadowMapping/QuadFragment.Fshader");
+	m_QuadShader->Bind();
+	m_QuadShader->SetUniform1i("depthMap", 0);
+	m_QuadShader->Unbind();
 
-
-	m_DepthMapShader = std::make_unique<Shader>("res/shaders/ShadowMapping/SimpleDepthShaderVertex.Vshader", "res/shaders/ShadowMapping/SimpleDepthShaderFragment.Fshader");
-
+	//深度贴图
+	m_SimpleDepthShader = std::make_unique<Shader>("res/shaders/ShadowMapping/SimpleDepthShaderVertex.Vshader", "res/shaders/ShadowMapping/SimpleDepthShaderFragment.Fshader");
 	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-	glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightView = glm::lookAt(m_LightPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	m_LightSpaceMatrix = lightProjection * lightView;
+
+	//实际绘制
+	m_DepthMapShader = std::make_unique<Shader>("res/shaders/ShadowMapping/DepthMapShaderVertex.Vshader", "res/shaders/ShadowMapping/DepthMapShaderFragment.Fshader");
+	m_DepthMapShader->Bind();
+	m_DepthMapShader->SetUniform1i("diffuseTexture", 0);
+	m_DepthMapShader->SetUniform1i("shadowMap", 1);
+	m_DepthMapShader->Unbind();
 
 	//要开启深度测试 ！！！
 	GLCall(glEnable(GL_DEPTH_TEST));
@@ -323,27 +335,47 @@ void test::TestShadowMapping::OnRender()
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	m_DepthMapShader->Bind();
-	m_DepthMapShader->SetUniformsMat4f("lightSpaceMatrix", m_LightSpaceMatrix);
+	//GLCall(glCullFace(GL_FRONT)); //解决悬浮(Peter Panning)但只对内部不会对外开口的实体物体有效
+	m_SimpleDepthShader->Bind();
+	m_SimpleDepthShader->SetUniformsMat4f("lightSpaceMatrix", m_LightSpaceMatrix);
 	//DepthMap 宽高
 	GLCall(glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT));
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_DepthMapFBO));
 	GLCall(glClear(GL_DEPTH_BUFFER_BIT));
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_FloorTexture));
-	RenderScene(*m_DepthMapShader);
+	RenderScene(*m_SimpleDepthShader);
+	m_SimpleDepthShader->Unbind();
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+	//GLCall(glCullFace(GL_BACK));//解决悬浮(Peter Panning) 地板上无效，因为正面剔除完全移除了地板。地面是一个单独的平面，不会被完全剔除
 
 	// reset viewport
 	GLCall(glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-	m_Shader->Bind();
-	m_Shader->SetUniform1f("near_plane", near_plane);
-	m_Shader->SetUniform1f("far_plane", far_plane);
+	m_DepthMapShader->Bind();
+	glm::mat4 projection = m_Camera->GetProjMatrix();
+	glm::mat4 view = m_Camera->GetViewMatrix();
+	m_DepthMapShader->SetUniformsMat4f("projection", projection);
+	m_DepthMapShader->SetUniformsMat4f("view", view);
+	// set light uniforms
+	m_DepthMapShader->SetUniforms3f("viewPos", m_Camera->GetPos());
+	m_DepthMapShader->SetUniforms3f("lightPos", m_LightPos);
+	m_DepthMapShader->SetUniformsMat4f("lightSpaceMatrix", m_LightSpaceMatrix);
+	GLCall(glActiveTexture(GL_TEXTURE0));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_FloorTexture));
+	GLCall(glActiveTexture(GL_TEXTURE1));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_DepthMap));
+	RenderScene(*m_DepthMapShader);
+	m_DepthMapShader->Unbind();
+
+	m_QuadShader->Bind();
+	m_QuadShader->SetUniform1f("near_plane", near_plane);
+	m_QuadShader->SetUniform1f("far_plane", far_plane);
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_DepthMap));
-	RenderQuad();
+	//RenderQuad();
+	m_QuadShader->Unbind();
 }
 
 void test::TestShadowMapping::OnImGuiRender()

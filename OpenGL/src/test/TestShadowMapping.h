@@ -24,8 +24,9 @@ namespace test
 		int LoadImage(char const* filename) override;
 		
 	private:
-		std::unique_ptr<Shader> m_Shader;
 		std::unique_ptr<Shader> m_DepthMapShader;
+		std::unique_ptr<Shader> m_QuadShader;
+		std::unique_ptr<Shader> m_SimpleDepthShader;
 		std::unique_ptr<Camera> m_Camera;
 		GLuint m_FloorTexture;
 		GLuint m_PlaneVAO, m_PlaneVBO;
@@ -34,6 +35,8 @@ namespace test
 		GLuint m_DepthMapFBO, m_DepthMap;
 		glm::mat4 m_Model, m_View, m_Proj;
 		glm::mat4 m_LightSpaceMatrix;
+
+		glm::vec3 m_LightPos;
 
 		bool m_GammaEnabled = false;
 		bool m_GammaKeyPressed = false;
