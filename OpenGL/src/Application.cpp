@@ -32,6 +32,7 @@
 #include "test/TestAdvancedLighting.h"
 #include "test/TestGammaCorrection.h"
 #include "test/TestShadowMapping.h"
+#include "test/TestPointShadows.h"
 
 int main()
 {
@@ -129,6 +130,7 @@ int main()
 	testMenu->RegisterTest<::test::TestAdvancedLighting>("AdvancedLighting");
 	testMenu->RegisterTest<::test::TestGammaCorrection>("GammaCorrection");
 	testMenu->RegisterTest<::test::TestShadowMapping>("ShadowMapping");
+	testMenu->RegisterTest<::test::TestPointShadows>("PointShadows");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
