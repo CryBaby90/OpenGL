@@ -124,6 +124,7 @@
     <ClCompile Include="src\test\TestMatrix.cpp" />
     <ClCompile Include="src\test\TestModel.cpp" />
     <ClCompile Include="src\test\TestMultipleLights.cpp" />
+    <ClCompile Include="src\test\TestNormalMapping.cpp" />
     <ClCompile Include="src\test\TestPlanetInstancing.cpp" />
     <ClCompile Include="src\test\TestPointShadows.cpp" />
     <ClCompile Include="src\test\TestShaderPart.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="src\test\TestMatrix.h" />
     <ClInclude Include="src\test\TestModel.h" />
     <ClInclude Include="src\test\TestMultipleLights.h" />
+    <ClInclude Include="src\test\TestNormalMapping.h" />
     <ClInclude Include="src\test\TestPlanetInstancing.h" />
     <ClInclude Include="src\test\TestPointShadows.h" />
     <ClInclude Include="src\test\TestShaderPart.h" />

@@ -156,6 +156,9 @@
     <ClCompile Include="src\test\TestPointShadows.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\test\TestNormalMapping.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\GLCall.h">
@@ -1155,6 +1158,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\test\TestPointShadows.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\TestNormalMapping.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
