@@ -12,9 +12,14 @@ test::TestParallaxMapping::TestParallaxMapping()
 	:m_Shader(nullptr), m_LightPos(0.5f, 1.0f, 0.3f)
 {
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
+	/*
 	m_DiffuseMap = LoadImage("res/textures/bricks2.jpg");
 	m_NormalMap = LoadImage("res/textures/bricks2_normal.jpg");
-	m_HeightMap = LoadImage("res/textures/bricks2_disp.jpg");
+	m_HeightMap = LoadImage("res/textures/bricks2_disp.jpg");*/
+
+	m_DiffuseMap = LoadImage("res/textures/wood.png");
+	m_NormalMap = LoadImage("res/textures/toy_box_normal.png");
+	m_HeightMap = LoadImage("res/textures/toy_box_disp.png");
 
 	// 着色器程序
 	m_Shader = std::make_unique<Shader>("res/shaders/ParallaxMapping/Vertex.Vshader", "res/shaders/ParallaxMapping/Fragment.Fshader");
@@ -44,14 +49,14 @@ void test::TestParallaxMapping::OnProcessInput(GLFWwindow* window, GLfloat delta
 {
 	m_Camera->OnProcessInput(window, deltaTime);
 
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
 	{
 		if (heightScale > 0.0f)
 			heightScale -= 0.0005f;
 		else
 			heightScale = 0.0f;
 	}
-	else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 	{
 		if (heightScale < 1.0f)
 			heightScale += 0.0005f;
