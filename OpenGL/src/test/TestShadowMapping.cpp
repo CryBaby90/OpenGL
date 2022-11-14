@@ -9,7 +9,7 @@
 #include <sstream>
 
 test::TestShadowMapping::TestShadowMapping()
-	:m_QuadShader(nullptr), m_Camera(nullptr), m_SimpleDepthShader(nullptr), m_DepthMapShader(nullptr),
+	:m_QuadShader(nullptr), m_Camera(nullptr), m_SimpleDepthShader(nullptr), m_Shader(nullptr),
 	m_LightPos(-2.0f, 4.0f, -1.0f)
 {
 	//在上下文之后
@@ -82,11 +82,11 @@ test::TestShadowMapping::TestShadowMapping()
 	m_LightSpaceMatrix = lightProjection * lightView;
 
 	//实际绘制
-	m_DepthMapShader = std::make_unique<Shader>("res/shaders/ShadowMapping/DepthMapShaderVertex.Vshader", "res/shaders/ShadowMapping/DepthMapShaderFragment.Fshader");
-	m_DepthMapShader->Bind();
-	m_DepthMapShader->SetUniform1i("diffuseTexture", 0);
-	m_DepthMapShader->SetUniform1i("shadowMap", 1);
-	m_DepthMapShader->Unbind();
+	m_Shader = std::make_unique<Shader>("res/shaders/ShadowMapping/Vertex.Vshader", "res/shaders/ShadowMapping/Fragment.Fshader");
+	m_Shader->Bind();
+	m_Shader->SetUniform1i("diffuseTexture", 0);
+	m_Shader->SetUniform1i("shadowMap", 1);
+	m_Shader->Unbind();
 
 	//要开启深度测试 ！！！
 	GLCall(glEnable(GL_DEPTH_TEST));
@@ -353,21 +353,21 @@ void test::TestShadowMapping::OnRender()
 	GLCall(glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-	m_DepthMapShader->Bind();
+	m_Shader->Bind();
 	glm::mat4 projection = m_Camera->GetProjMatrix();
 	glm::mat4 view = m_Camera->GetViewMatrix();
-	m_DepthMapShader->SetUniformsMat4f("projection", projection);
-	m_DepthMapShader->SetUniformsMat4f("view", view);
+	m_Shader->SetUniformsMat4f("projection", projection);
+	m_Shader->SetUniformsMat4f("view", view);
 	// set light uniforms
-	m_DepthMapShader->SetUniforms3f("viewPos", m_Camera->GetPos());
-	m_DepthMapShader->SetUniforms3f("lightPos", m_LightPos);
-	m_DepthMapShader->SetUniformsMat4f("lightSpaceMatrix", m_LightSpaceMatrix);
+	m_Shader->SetUniforms3f("viewPos", m_Camera->GetPos());
+	m_Shader->SetUniforms3f("lightPos", m_LightPos);
+	m_Shader->SetUniformsMat4f("lightSpaceMatrix", m_LightSpaceMatrix);
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_FloorTexture));
 	GLCall(glActiveTexture(GL_TEXTURE1));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_DepthMap));
-	RenderScene(*m_DepthMapShader);
-	m_DepthMapShader->Unbind();
+	RenderScene(*m_Shader);
+	m_Shader->Unbind();
 
 	m_QuadShader->Bind();
 	m_QuadShader->SetUniform1f("near_plane", near_plane);

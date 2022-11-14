@@ -24,7 +24,7 @@ namespace test
 		int LoadImage(char const* filename) override;
 		
 	private:
-		std::unique_ptr<Shader> m_DepthMapShader;
+		std::unique_ptr<Shader> m_Shader;
 		std::unique_ptr<Shader> m_QuadShader;
 		std::unique_ptr<Shader> m_SimpleDepthShader;
 		std::unique_ptr<Camera> m_Camera;
