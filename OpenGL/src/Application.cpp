@@ -35,6 +35,7 @@
 #include "test/TestPointShadows.h"
 #include "test/TestNormalMapping.h"
 #include "test/TestParallaxMapping.h"
+#include "test/TestHDR.h"
 
 int main()
 {
@@ -135,6 +136,7 @@ int main()
 	testMenu->RegisterTest<::test::TestPointShadows>("PointShadows");
 	testMenu->RegisterTest<::test::TestNormalMapping>("NormalMapping");
 	testMenu->RegisterTest<::test::TestParallaxMapping>("ParallaxMapping");
+	testMenu->RegisterTest<::test::TestHDR>("HDR");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
