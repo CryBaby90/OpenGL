@@ -108,6 +108,7 @@
     <ClCompile Include="src\test\TestAntiAliasing.cpp" />
     <ClCompile Include="src\test\TestBaseLight.cpp" />
     <ClCompile Include="src\test\TestBlending.cpp" />
+    <ClCompile Include="src\test\TestBloom.cpp" />
     <ClCompile Include="src\test\TestCamera.cpp" />
     <ClCompile Include="src\test\TestCoordinate.cpp" />
     <ClCompile Include="src\test\TestCubemaps.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="src\test\TestAntiAliasing.h" />
     <ClInclude Include="src\test\TestBaseLight.h" />
     <ClInclude Include="src\test\TestBlending.h" />
+    <ClInclude Include="src\test\TestBloom.h" />
     <ClInclude Include="src\test\TestCamera.h" />
     <ClInclude Include="src\test\TestCoordinate.h" />
     <ClInclude Include="src\test\TestCubemaps.h" />
