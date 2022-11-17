@@ -37,6 +37,8 @@ namespace test
 
 		GLuint m_QuadVAO = 0;
 		GLuint m_QuadVBO;
+		GLuint m_CubeVAO = 0;
+		GLuint m_CubeVBO = 0;
 
 		GLuint m_gBuffer, m_gPosition, m_gNormal, m_gAlbedoSpec, m_rboDepth;
 		GLuint m_Attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };

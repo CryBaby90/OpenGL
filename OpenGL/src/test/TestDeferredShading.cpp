@@ -12,7 +12,13 @@ test::TestDeferredShading::TestDeferredShading()
 	:m_Shader(nullptr), m_BoxShader(nullptr), m_GBufferShader(nullptr), 
 	m_Camera(nullptr), m_RealModel(nullptr)
 {
-	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 5.0f));
+	/*
+	* 延迟渲染确实带来一些缺点：大内存开销，没有MSAA和混合(仍需要正向渲染的配合)。
+	* 当你有一个很小的场景并且没有很多的光源时候，
+	* 延迟渲染并不一定会更快一点，甚至有些时候由于开销超过了它的优点还会更慢。
+	*/
+
+	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 1.0f, 7.0f));
 	m_RealModel = std::make_unique<Model>("res/obj/nanosuit.obj");
 
 	// 着色器程序
@@ -103,8 +109,10 @@ test::TestDeferredShading::TestDeferredShading()
 test::TestDeferredShading::~TestDeferredShading()
 {
 	//资源释放
-	/*GLCall(glDeleteVertexArrays(1, &quadVAO));
-	GLCall(glDeleteBuffers(1, &quadVBO));*/
+	GLCall(glDeleteVertexArrays(1, &m_QuadVAO));
+	GLCall(glDeleteBuffers(1, &m_QuadVBO));
+	GLCall(glDeleteVertexArrays(1, &m_CubeVAO));
+	GLCall(glDeleteBuffers(1, &m_CubeVBO));
 	GLCall(glDeleteFramebuffers(1, &m_gBuffer));
 	GLCall(glDeleteRenderbuffers(1, &m_rboDepth));
 }
@@ -229,11 +237,9 @@ void test::TestDeferredShading::RenderQuad()
 	glBindVertexArray(0);
 }
 
-unsigned int cubeVAO = 0;
-unsigned int cubeVBO = 0;
 void test::TestDeferredShading::RenderCube()
 {
-	if (cubeVAO == 0)
+	if (m_CubeVAO == 0)
 	{
 		float vertices[] = {
 			// back face
@@ -279,13 +285,13 @@ void test::TestDeferredShading::RenderCube()
 			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
 			-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
 		};
-		glGenVertexArrays(1, &cubeVAO);
-		glGenBuffers(1, &cubeVBO);
+		glGenVertexArrays(1, &m_CubeVAO);
+		glGenBuffers(1, &m_CubeVBO);
 		// fill buffer
-		glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_CubeVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 		// link vertex attributes
-		glBindVertexArray(cubeVAO);
+		glBindVertexArray(m_CubeVAO);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
@@ -296,7 +302,7 @@ void test::TestDeferredShading::RenderCube()
 		glBindVertexArray(0);
 	}
 	// render Cube
-	glBindVertexArray(cubeVAO);
+	glBindVertexArray(m_CubeVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
@@ -351,6 +357,10 @@ void test::TestDeferredShading::OnRender()
 		const GLfloat quadratic = 1.8f;
 		m_Shader->SetUniform1f("lights[" + std::to_string(i) + "].Linear", linear);
 		m_Shader->SetUniform1f("lights[" + std::to_string(i) + "].Quadratic", quadratic);
+		// then calculate radius of light volume/sphere
+		const float maxBrightness = std::fmaxf(std::fmaxf(m_LightColors[i].r, m_LightColors[i].g), m_LightColors[i].b);
+		float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
+		m_Shader->SetUniform1f("lights[" + std::to_string(i) + "].Radius", radius);
 	}
 	m_Shader->SetUniforms3f("viewPos", m_Camera->GetPos());
 	// Finally render quad

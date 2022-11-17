@@ -15,6 +15,7 @@ struct Light {
     
     float Linear;
     float Quadratic;
+    float Radius;
 };
 const int NR_LIGHTS = 32;
 uniform Light lights[NR_LIGHTS];
@@ -31,23 +32,32 @@ void main()
     // then calculate lighting as usual
     vec3 lighting  = Diffuse * 0.1; // hard-coded ambient component
     vec3 viewDir  = normalize(viewPos - FragPos);
+
+    //注意：GPU和GLSL并不擅长优化循环和分支
+    //GPU工作下总是执行一个if语句所有的分支从而保证着色器运行都是一样的
+    //所以仍然在对所有光源计算光照！
     for(int i = 0; i < NR_LIGHTS; ++i)
     {
-        // diffuse
-        vec3 lightDir = normalize(lights[i].Position - FragPos);
-        vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lights[i].Color;
-
-        // specular
-        vec3 halfwayDir = normalize(lightDir + viewDir);  
-        float spec = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
-        vec3 specular = lights[i].Color * spec * Specular;
-
-        // attenuation
+        // 计算距光源的距离
         float distance = length(lights[i].Position - FragPos);
-        float attenuation = 1.0 / (1.0 + lights[i].Linear * distance + lights[i].Quadratic * distance * distance);
-        diffuse *= attenuation;
-        specular *= attenuation;
-        lighting += diffuse + specular;        
+        if(distance < lights[i].Radius)
+        {
+            // diffuse
+            vec3 lightDir = normalize(lights[i].Position - FragPos);
+            vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lights[i].Color;
+
+            // specular
+            vec3 halfwayDir = normalize(lightDir + viewDir);  
+            float spec = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
+            vec3 specular = lights[i].Color * spec * Specular;
+
+            // attenuation
+            float distance = length(lights[i].Position - FragPos);
+            float attenuation = 1.0 / (1.0 + lights[i].Linear * distance + lights[i].Quadratic * distance * distance);
+            diffuse *= attenuation;
+            specular *= attenuation;
+            lighting += diffuse + specular;   
+        }     
     }
     FragColor = vec4(lighting, 1.0);
 }
