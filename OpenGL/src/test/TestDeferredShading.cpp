@@ -9,7 +9,8 @@
 #include <sstream>
 
 test::TestDeferredShading::TestDeferredShading()
-	:m_Shader(nullptr), m_GBufferShader(nullptr), m_Camera(nullptr), m_RealModel(nullptr)
+	:m_Shader(nullptr), m_BoxShader(nullptr), m_GBufferShader(nullptr), 
+	m_Camera(nullptr), m_RealModel(nullptr)
 {
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 5.0f));
 	m_RealModel = std::make_unique<Model>("res/obj/nanosuit.obj");
@@ -17,17 +18,18 @@ test::TestDeferredShading::TestDeferredShading()
 	// 着色器程序
 	m_GBufferShader = std::make_unique<Shader>("res/shaders/DeferredShading/GBufferVertex.Vshader", "res/shaders/DeferredShading/GBufferFragment.Fshader");
 	m_Shader = std::make_unique<Shader>("res/shaders/DeferredShading/Vertex.Vshader", "res/shaders/DeferredShading/Fragment.Fshader");
+	m_BoxShader = std::make_unique<Shader>("res/shaders/DeferredShading/BoxVertex.Vshader", "res/shaders/DeferredShading/BoxFragment.Fshader");
 
 	// back light
-	m_ObjectPositions.push_back(glm::vec3(-3.0, -3.0, -3.0));
-	m_ObjectPositions.push_back(glm::vec3(0.0, -3.0, -3.0));
-	m_ObjectPositions.push_back(glm::vec3(3.0, -3.0, -3.0));
-	m_ObjectPositions.push_back(glm::vec3(-3.0, -3.0, 0.0));
-	m_ObjectPositions.push_back(glm::vec3(0.0, -3.0, 0.0));
-	m_ObjectPositions.push_back(glm::vec3(3.0, -3.0, 0.0));
-	m_ObjectPositions.push_back(glm::vec3(-3.0, -3.0, 3.0));
-	m_ObjectPositions.push_back(glm::vec3(0.0, -3.0, 3.0));
-	m_ObjectPositions.push_back(glm::vec3(3.0, -3.0, 3.0));
+	m_ObjectPositions.push_back(glm::vec3(-3.0, -0.5, -3.0));
+	m_ObjectPositions.push_back(glm::vec3(0.0, -0.5, -3.0));
+	m_ObjectPositions.push_back(glm::vec3(3.0, -0.5, -3.0));
+	m_ObjectPositions.push_back(glm::vec3(-3.0, -0.5, 0.0));
+	m_ObjectPositions.push_back(glm::vec3(0.0, -0.5, 0.0));
+	m_ObjectPositions.push_back(glm::vec3(3.0, -0.5, 0.0));
+	m_ObjectPositions.push_back(glm::vec3(-3.0, -0.5, 3.0));
+	m_ObjectPositions.push_back(glm::vec3(0.0, -0.5, 3.0));
+	m_ObjectPositions.push_back(glm::vec3(3.0, -0.5, 3.0));
 
 	// colors
 	const GLuint NR_LIGHTS = 32;
@@ -46,14 +48,8 @@ test::TestDeferredShading::TestDeferredShading()
 		m_LightColors.push_back(glm::vec3(rColor, gColor, bColor));
 	}
 
-	m_Shader->Bind();
-	m_Shader->SetUniform1i("gPosition", 0);
-	m_Shader->SetUniform1i("gNormal", 1);
-	m_Shader->SetUniform1i("gAlbedoSpec", 2);
-	m_Shader->Unbind();
-
 	// Set up G-Buffer
-	// 3 textures:
+	//textures:
 	// 1. Positions (RGB)
 	// 2. Color (RGB) + Specular (A)
 	// 3. Normals (RGB) 
@@ -93,6 +89,12 @@ test::TestDeferredShading::TestDeferredShading()
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Framebuffer not complete!" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	m_Shader->Bind();
+	m_Shader->SetUniform1i("gPosition", 0);
+	m_Shader->SetUniform1i("gNormal", 1);
+	m_Shader->SetUniform1i("gAlbedoSpec", 2);
+	m_Shader->Unbind();
 
 	//要开启深度测试 ！！！
 	GLCall(glEnable(GL_DEPTH_TEST));
@@ -202,7 +204,7 @@ int test::TestDeferredShading::LoadImage(char const* filename, bool gammaCorrect
 
 void test::TestDeferredShading::RenderQuad()
 {
-	if (quadVAO == 0)
+	if (m_QuadVAO == 0)
 	{
 		float quadVertices[] = {
 			// positions        // texture Coords
@@ -212,18 +214,90 @@ void test::TestDeferredShading::RenderQuad()
 			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 		};
 		// setup plane VAO
-		glGenVertexArrays(1, &quadVAO);
-		glGenBuffers(1, &quadVBO);
-		glBindVertexArray(quadVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+		glGenVertexArrays(1, &m_QuadVAO);
+		glGenBuffers(1, &m_QuadVBO);
+		glBindVertexArray(m_QuadVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_QuadVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	}
-	glBindVertexArray(quadVAO);
+	glBindVertexArray(m_QuadVAO);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
+}
+
+unsigned int cubeVAO = 0;
+unsigned int cubeVBO = 0;
+void test::TestDeferredShading::RenderCube()
+{
+	if (cubeVAO == 0)
+	{
+		float vertices[] = {
+			// back face
+			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+			// front face
+			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			// left face
+			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			// right face
+			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+			// bottom face
+			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			// top face
+			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			 1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+			 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
+		};
+		glGenVertexArrays(1, &cubeVAO);
+		glGenBuffers(1, &cubeVBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(cubeVAO);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(cubeVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
 
@@ -247,9 +321,9 @@ void test::TestDeferredShading::OnRender()
 	m_GBufferShader->SetUniformsMat4f("view", m_View);
 	for (unsigned int i = 0; i < m_ObjectPositions.size(); i++)
 	{
-		m_Model = glm::mat4();
+		m_Model = glm::mat4(1.0f); //吐血，这里初始化时候一定要填数值
 		m_Model = glm::translate(m_Model, m_ObjectPositions[i]);
-		m_Model = glm::scale(m_Model, glm::vec3(0.25f));
+		m_Model = glm::scale(m_Model, glm::vec3(0.1f));
 		m_GBufferShader->SetUniformsMat4f("model", m_Model);
 		m_RealModel->Draw(*m_GBufferShader);
 	}
@@ -282,6 +356,27 @@ void test::TestDeferredShading::OnRender()
 	// Finally render quad
 	RenderQuad();
 	m_GBufferShader->Unbind();
+
+	//2.5 正向渲染 
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_gBuffer);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 写入默认帧缓冲
+	//复制深度信息
+	glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	m_BoxShader->Bind();
+	m_BoxShader->SetUniformsMat4f("projection", m_Proj);
+	m_BoxShader->SetUniformsMat4f("view", m_View);
+	for (unsigned int i = 0; i < m_LightPositions.size(); i++)
+	{
+		m_Model = glm::mat4(1.0f);
+		m_Model = glm::translate(m_Model, m_LightPositions[i]);
+		m_Model = glm::scale(m_Model, glm::vec3(0.125f));
+		m_BoxShader->SetUniformsMat4f("model", m_Model);
+		m_BoxShader->SetUniforms3f("lightColor", m_LightColors[i]);
+		RenderCube();
+	}
+	m_BoxShader->Unbind();
 }
 
 void test::TestDeferredShading::OnImGuiRender()
