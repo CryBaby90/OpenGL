@@ -9,7 +9,8 @@
 #include <sstream>
 
 test::TestBloom::TestBloom()
-	:m_BloomShader(nullptr), m_LightShader(nullptr)
+	:m_BloomShader(nullptr), m_LightShader(nullptr), m_BlurShader(nullptr), 
+	m_FinalShader(nullptr), m_Camera(nullptr)
 {
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 5.0f));
 

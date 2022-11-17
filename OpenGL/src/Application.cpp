@@ -37,6 +37,7 @@
 #include "test/TestParallaxMapping.h"
 #include "test/TestHDR.h"
 #include "test/TestBloom.h"
+#include "test/TestDeferredShading.h"
 
 int main()
 {
@@ -139,6 +140,7 @@ int main()
 	testMenu->RegisterTest<::test::TestParallaxMapping>("ParallaxMapping");
 	testMenu->RegisterTest<::test::TestHDR>("HDR");
 	testMenu->RegisterTest<::test::TestBloom>("Bloom");
+	testMenu->RegisterTest<::test::TestDeferredShading>("DeferredShading");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
