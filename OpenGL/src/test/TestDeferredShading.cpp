@@ -200,8 +200,6 @@ int test::TestDeferredShading::LoadImage(char const* filename, bool gammaCorrect
 	return textureID;
 }
 
-unsigned int quadVAO = 0;
-unsigned int quadVBO;
 void test::TestDeferredShading::RenderQuad()
 {
 	if (quadVAO == 0)

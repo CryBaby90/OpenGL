@@ -34,6 +34,9 @@ namespace test
 		std::vector<glm::vec3> m_LightColors;
 		glm::mat4 m_Model, m_View, m_Proj;
 
+		unsigned int quadVAO = 0;
+		unsigned int quadVBO;
+
 		GLuint m_gBuffer, m_gPosition, m_gNormal, m_gAlbedoSpec, m_rboDepth;
 		GLuint m_Attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 

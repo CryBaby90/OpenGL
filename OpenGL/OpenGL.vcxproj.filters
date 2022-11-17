@@ -123,9 +123,6 @@
     <ClCompile Include="src\test\TestCubemaps.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\test\TestAdvancedData.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -169,6 +166,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\test\TestDeferredShading.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
