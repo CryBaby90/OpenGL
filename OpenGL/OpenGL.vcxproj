@@ -135,6 +135,7 @@
     <ClCompile Include="src\test\Test.cpp" />
     <ClCompile Include="src\test\TestClearColor.cpp" />
     <ClCompile Include="src\test\TestShadowMapping.cpp" />
+    <ClCompile Include="src\test\TestSSAO.cpp" />
     <ClCompile Include="src\test\TestStandDraw.cpp" />
     <ClCompile Include="src\test\TestStencilTesting.cpp" />
     <ClCompile Include="src\test\TestTexture.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="src\test\Test.h" />
     <ClInclude Include="src\test\TestClearColor.h" />
     <ClInclude Include="src\test\TestShadowMapping.h" />
+    <ClInclude Include="src\test\TestSSAO.h" />
     <ClInclude Include="src\test\TestStandDraw.h" />
     <ClInclude Include="src\test\TestStencilTesting.h" />
     <ClInclude Include="src\test\TestTexture.h" />

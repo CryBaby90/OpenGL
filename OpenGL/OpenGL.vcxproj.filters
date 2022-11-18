@@ -171,6 +171,9 @@
     <ClCompile Include="src\Application.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\test\TestSSAO.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\GLCall.h">
@@ -1185,6 +1188,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\test\TestDeferredShading.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\TestSSAO.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
