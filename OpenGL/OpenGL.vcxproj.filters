@@ -177,6 +177,9 @@
     <ClCompile Include="src\test\PBRPipleline\PBRLighting\TestPBRLighting.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\test\PBRPipleline\PBRTexture\TesPBRTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\GLCall.h">
@@ -1197,6 +1200,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\test\PBRPipleline\PBRLighting\TesPBRLighting.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\PBRPipleline\PBRTexture\TesPBRTexture.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

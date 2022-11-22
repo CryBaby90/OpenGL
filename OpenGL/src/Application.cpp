@@ -40,6 +40,7 @@
 #include "test/TestDeferredShading.h"
 #include "test/TestSSAO.h"
 #include "test/PBRPipleline/PBRLighting/TesPBRLighting.h"
+#include "test/PBRPipleline/PBRTexture/TesPBRTexture.h"
 
 int main()
 {
@@ -145,6 +146,7 @@ int main()
 	testMenu->RegisterTest<::test::TestDeferredShading>("DeferredShading");
 	testMenu->RegisterTest<::test::TestSSAO>("SSAO");
 	testMenu->RegisterTest<::test::TesPBRLighting>("PBRLighting");
+	testMenu->RegisterTest<::test::TesPBRTexture>("PBRTexture");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);

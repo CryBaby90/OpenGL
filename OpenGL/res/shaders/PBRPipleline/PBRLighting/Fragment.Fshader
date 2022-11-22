@@ -94,6 +94,7 @@ void main()
         kD *= 1.0 - metallic; // 如果表面是金属的，我们会把系数kD变为0
 
         float NdotL = max(dot(N, L), 0.0); 
+
         //比较重要的是我们没有把kS乘进去我们的反射率方程中，
         //这是因为我们已经在specualr BRDF中乘了菲涅尔系数F了，
         //因为kS等于F，因此我们不需要再乘一次。
