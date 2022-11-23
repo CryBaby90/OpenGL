@@ -19,11 +19,19 @@ uniform float metallic;
 uniform float roughness;
 uniform float ao;
 
+// IBL
+uniform samplerCube irradianceMap;
+
 const float PI = 3.14159265359;
 
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}  
+
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }  
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
@@ -101,7 +109,17 @@ void main()
         Lo += (kD * albedo / PI + specular) * radiance * NdotL;
     }
 
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    // ambient lighting (we now use IBL as the ambient term)
+    //由于环境光来自半球内围绕法线 N 的所有方向，因此没有一个确定的半向量来计算菲涅耳效应。
+    //为了模拟菲涅耳效应，我们用法线和视线之间的夹角计算菲涅耳系数
+    //之前我们是以受粗糙度影响的微表面半向量作为菲涅耳公式的输入，
+    //但我们目前没有考虑任何粗糙度，表面的反射率总是会相对较高.所以加入roughness
+    vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - metallic;	  
+    vec3 irradiance = texture(irradianceMap, N).rgb;
+    vec3 diffuse      = irradiance * albedo;
+    vec3 ambient = (kD * diffuse) * ao;
     vec3 color   = ambient + Lo;  
 
     //HDR tonemapping

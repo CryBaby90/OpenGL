@@ -26,12 +26,14 @@ namespace test
 	private:
 		std::unique_ptr<Shader> m_Shader;
 		std::unique_ptr<Shader> m_CubemapShader;
+		std::unique_ptr<Shader> m_IrradianceShader;
 		std::unique_ptr<Shader> m_BackgroundShader;
 		std::unique_ptr<Camera> m_Camera;
 		std::unique_ptr<Model> m_RealModel;
 
 		GLuint m_HdrTexture;
 		GLuint m_EnvCubemap;
+		GLuint m_IrradianceMap;
 
 		glm::vec3 lightPositions[4] = {
 			glm::vec3(-10.0f,  10.0f, 10.0f),

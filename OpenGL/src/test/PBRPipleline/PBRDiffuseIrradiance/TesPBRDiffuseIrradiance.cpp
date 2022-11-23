@@ -10,7 +10,7 @@
 #include <random>
 
 test::TesPBRDiffuseIrradiance::TesPBRDiffuseIrradiance()
-	:m_Shader(nullptr), m_CubemapShader(nullptr), m_BackgroundShader(nullptr),
+	:m_Shader(nullptr), m_CubemapShader(nullptr), m_IrradianceShader(nullptr), m_BackgroundShader(nullptr),
 	m_Camera(nullptr), m_RealModel(nullptr)
 {
 	//要开启深度测试 ！！！
@@ -22,9 +22,11 @@ test::TesPBRDiffuseIrradiance::TesPBRDiffuseIrradiance()
 	// 着色器程序
 	m_Shader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRDiffuseIrradiance/Vertex.Vshader", "res/shaders/PBRPipleline/PBRDiffuseIrradiance/Fragment.Fshader");
 	m_CubemapShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRDiffuseIrradiance/CubemapVertex.Vshader", "res/shaders/PBRPipleline/PBRDiffuseIrradiance/CubemapFragment.Fshader");
+	m_IrradianceShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRDiffuseIrradiance/CubemapVertex.Vshader", "res/shaders/PBRPipleline/PBRDiffuseIrradiance/IrradianceFragment.Fshader");
 	m_BackgroundShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRDiffuseIrradiance/BackgroundVertex.Vshader", "res/shaders/PBRPipleline/PBRDiffuseIrradiance/BackgroundFragment.Fshader");
 
 	m_Shader->Bind();
+	m_Shader->SetUniform1i("irradianceMap", 0);
 	m_Shader->SetUniforms3f("albedo", glm::vec3(0.5f, 0.0f, 0.0f));
 	m_Shader->SetUniform1f("ao", 1.0f);
 	m_Shader->Unbind();
@@ -34,8 +36,8 @@ test::TesPBRDiffuseIrradiance::TesPBRDiffuseIrradiance()
 	m_BackgroundShader->Unbind();
 
 	//pbr: load the HDR environment map
-	//m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Alexs_Apartment/Alexs_Apt_2k.hdr");
-	m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Stadium_Center/Stadium_Center_3k.hdr");
+	m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Alexs_Apartment/Alexs_Apt_2k.hdr");
+	//m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Stadium_Center/Stadium_Center_3k.hdr");
 
 	// pbr: setup framebuffer
 	// ----------------------
@@ -96,6 +98,45 @@ test::TesPBRDiffuseIrradiance::TesPBRDiffuseIrradiance()
 		RenderCube();
 	}
 	m_CubemapShader->Unbind();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// pbr: create an irradiance cubemap, and re-scale capture FBO to irradiance scale.
+	// --------------------------------------------------------------------------------
+	glGenTextures(1, &m_IrradianceMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_IrradianceMap);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
+
+	// pbr: solve diffuse integral by convolution to create an irradiance (cube)map.
+	// -----------------------------------------------------------------------------
+	m_IrradianceShader->Bind();
+;	m_IrradianceShader->SetUniform1i("environmentMap", 0);
+	m_IrradianceShader->SetUniformsMat4f("projection", captureProjection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_EnvCubemap);
+
+	glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		m_IrradianceShader->SetUniformsMat4f("view", captureViews[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_IrradianceMap, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		RenderCube();
+	}
+	m_IrradianceShader->Unbind();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// then before rendering, configure the viewport to the original framebuffer's screen dimensions
@@ -452,7 +493,7 @@ void test::TesPBRDiffuseIrradiance::OnRender()
 			model = glm::translate(model, glm::vec3(
 				(col - (nrColumns / 2)) * spacing,
 				(row - (nrRows / 2)) * spacing,
-				0.0f
+				-2.0f
 			));
 			m_Shader->SetUniformsMat4f("model", model);
 			RenderSphere();
