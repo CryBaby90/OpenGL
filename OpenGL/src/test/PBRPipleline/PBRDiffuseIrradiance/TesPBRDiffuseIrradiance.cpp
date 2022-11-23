@@ -482,6 +482,9 @@ void test::TesPBRDiffuseIrradiance::OnRender()
 	m_Shader->SetUniformsMat4f("projection", m_Proj);
 	m_Shader->SetUniformsMat4f("view", m_View);
 	m_Shader->SetUniforms3f("camPos", m_Camera->GetPos());
+	// bind pre-computed IBL data
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_IrradianceMap);
 	glm::mat4 model = glm::mat4(1.0f);
 	for (int row = 0; row < nrRows; ++row)
 	{
