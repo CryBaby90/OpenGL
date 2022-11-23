@@ -102,6 +102,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\test\PBRPipleline\PBRDiffuseIrradiance\TesPBRDiffuseIrradiance.cpp" />
     <ClCompile Include="src\test\PBRPipleline\PBRLighting\TestPBRLighting.cpp" />
     <ClCompile Include="src\test\PBRPipleline\PBRTexture\TesPBRTexture.cpp" />
     <ClCompile Include="src\test\TestAdvancedData.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="src\include\Model.h" />
     <ClInclude Include="src\include\OtherCamera.h" />
     <ClInclude Include="src\include\Shader.h" />
+    <ClInclude Include="src\test\PBRPipleline\PBRDiffuseIrradiance\TesPBRDiffuseIrradiance.h" />
     <ClInclude Include="src\test\PBRPipleline\PBRLighting\TesPBRLighting.h" />
     <ClInclude Include="src\test\PBRPipleline\PBRTexture\TesPBRTexture.h" />
     <ClInclude Include="src\test\TestAdvancedData.h" />
