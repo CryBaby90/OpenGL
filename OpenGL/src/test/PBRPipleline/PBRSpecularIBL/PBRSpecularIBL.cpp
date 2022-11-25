@@ -48,8 +48,8 @@ test::TesPBRSpecularIBL::TesPBRSpecularIBL()
 	m_BackgroundShader->Unbind();
 
 	//pbr: load the HDR environment map
-	m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Alexs_Apartment/Alexs_Apt_2k.hdr");
-	//m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Stadium_Center/Stadium_Center_3k.hdr");
+	//m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Alexs_Apartment/Alexs_Apt_2k.hdr");
+	m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Stadium_Center/Stadium_Center_3k.hdr");
 
 	// pbr: setup framebuffer
 	// ----------------------
@@ -156,9 +156,8 @@ test::TesPBRSpecularIBL::TesPBRSpecularIBL()
 
 	// pbr: create a pre-filter cubemap, and re-scale capture FBO to pre-filter scale.
    // --------------------------------------------------------------------------------
-	unsigned int prefilterMap;
-	glGenTextures(1, &prefilterMap);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+	glGenTextures(1, &m_PrefilterMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_PrefilterMap);
 	for (unsigned int i = 0; i < 6; ++i)
 	{
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
@@ -195,7 +194,7 @@ test::TesPBRSpecularIBL::TesPBRSpecularIBL()
 		for (unsigned int i = 0; i < 6; ++i)
 		{
 			m_PrefilterShader->SetUniformsMat4f("view", captureViews[i]);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap, mip);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_PrefilterMap, mip);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			RenderCube();
@@ -206,11 +205,10 @@ test::TesPBRSpecularIBL::TesPBRSpecularIBL()
 
 	// pbr: generate a 2D LUT from the BRDF equations used.
 	// ----------------------------------------------------
-	unsigned int brdfLUTTexture;
-	glGenTextures(1, &brdfLUTTexture);
+	glGenTextures(1, &m_BrdfLUTTexture);
 
 	// pre-allocate enough memory for the LUT texture.
-	glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
+	glBindTexture(GL_TEXTURE_2D, m_BrdfLUTTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
 	// be sure to set wrapping mode to GL_CLAMP_TO_EDGE
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -222,13 +220,14 @@ test::TesPBRSpecularIBL::TesPBRSpecularIBL()
 	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUTTexture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_BrdfLUTTexture, 0);
 
 	glViewport(0, 0, 512, 512);
 	m_BrdfShader->Bind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	RenderQuad();
 	m_BrdfShader->Unbind();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// then before rendering, configure the viewport to the original framebuffer's screen dimensions
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
@@ -574,6 +573,10 @@ void test::TesPBRSpecularIBL::OnRender()
 	// bind pre-computed IBL data
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_IrradianceMap);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_PrefilterMap);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, m_BrdfLUTTexture);
 	glm::mat4 model = glm::mat4(1.0f);
 	for (int row = 0; row < nrRows; ++row)
 	{
@@ -617,6 +620,8 @@ void test::TesPBRSpecularIBL::OnRender()
 	m_BackgroundShader->SetUniformsMat4f("view", m_View);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_EnvCubemap);
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap); // display prefilter map
 	RenderCube();
 	m_BackgroundShader->Unbind();
 }

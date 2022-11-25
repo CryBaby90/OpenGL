@@ -36,6 +36,8 @@ namespace test
 		GLuint m_HdrTexture;
 		GLuint m_EnvCubemap;
 		GLuint m_IrradianceMap;
+		GLuint m_PrefilterMap;
+		GLuint m_BrdfLUTTexture;
 
 		glm::vec3 lightPositions[4] = {
 			glm::vec3(-10.0f,  10.0f, 10.0f),
