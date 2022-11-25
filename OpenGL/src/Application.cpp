@@ -42,6 +42,7 @@
 #include "test/PBRPipleline/PBRLighting/TesPBRLighting.h"
 #include "test/PBRPipleline/PBRTexture/TesPBRTexture.h"
 #include "test/PBRPipleline/PBRDiffuseIrradiance/TesPBRDiffuseIrradiance.h"
+#include "test/PBRPipleline/PBRSpecularIBL/PBRSpecularIBL.h"
 
 int main()
 {
@@ -148,7 +149,8 @@ int main()
 	testMenu->RegisterTest<::test::TestSSAO>("SSAO");
 	testMenu->RegisterTest<::test::TesPBRLighting>("PBRLighting");
 	testMenu->RegisterTest<::test::TesPBRTexture>("PBRTexture");
-	testMenu->RegisterTest < ::test::TesPBRDiffuseIrradiance>("PBRDiffuseIrradiance");
+	testMenu->RegisterTest<::test::TesPBRDiffuseIrradiance>("PBRDiffuseIrradiance");
+	testMenu->RegisterTest<::test::TesPBRSpecularIBL>("PBRSpecularIBL");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
