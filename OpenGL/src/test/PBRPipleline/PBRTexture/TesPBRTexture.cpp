@@ -14,11 +14,11 @@ test::TesPBRTexture::TesPBRTexture()
 {
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 20.0f));	
 
-	m_AlbedoTexture = LoadImage("res/textures/pbr/albedo.png");
-	m_NormalTexture = LoadImage("res/textures/pbr/normal.png");
-	m_MetallicTexture = LoadImage("res/textures/pbr/metallic.png");
-	m_RoughnessTexture = LoadImage("res/textures/pbr/roughness.png");
-	m_AoTexture = LoadImage("res/textures/pbr/ao.png");
+	m_AlbedoTexture = LoadImage("res/textures/pbr/Iron/albedo.png");
+	m_NormalTexture = LoadImage("res/textures/pbr/Iron/normal.png");
+	m_MetallicTexture = LoadImage("res/textures/pbr/Iron/metallic.png");
+	m_RoughnessTexture = LoadImage("res/textures/pbr/Iron/roughness.png");
+	m_AoTexture = LoadImage("res/textures/pbr/Iron/ao.png");
 
 	// 着色器程序
 	m_Shader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRTexture/Vertex.Vshader", "res/shaders/PBRPipleline/PBRTexture/Fragment.Fshader");

@@ -27,11 +27,53 @@ test::TesPBRSpecularIBL_Texture::TesPBRSpecularIBL_Texture()
 
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 20.0f));	
 
-	m_AlbedoMap = LoadImage("res/textures/pbr/albedo.png");
-	m_NormalMap = LoadImage("res/textures/pbr/normal.png");
-	m_MetallicMap = LoadImage("res/textures/pbr/metallic.png");
-	m_RoughnessMap = LoadImage("res/textures/pbr/roughness.png");
-	m_AOMap = LoadImage("res/textures/pbr/ao.png");
+	m_IronAlbedoMap = LoadImage("res/textures/pbr/Iron/albedo.png");
+	m_IronNormalMap = LoadImage("res/textures/pbr/Iron/normal.png");
+	m_IronMetallicMap = LoadImage("res/textures/pbr/Iron/metallic.png");
+	m_IronRoughnessMap = LoadImage("res/textures/pbr/Iron/roughness.png");
+	m_IronAOMap = LoadImage("res/textures/pbr/Iron/ao.png");
+
+	m_GrayGraniteAlbedoMap = LoadImage("res/textures/pbr/GrayGranite/albedo.png");
+	m_GrayGraniteNormalMap = LoadImage("res/textures/pbr/GrayGranite/normal.png");
+	m_GrayGraniteMetallicMap = LoadImage("res/textures/pbr/GrayGranite/metallic.png");
+	m_GrayGraniteRoughnessMap = LoadImage("res/textures/pbr/GrayGranite/roughness.png");
+	m_GrayGraniteAOMap = LoadImage("res/textures/pbr/GrayGranite/ao.png");
+
+	m_DustyCobbleAlbedoMap = LoadImage("res/textures/pbr/DustyCobble/albedo.png");
+	m_DustyCobbleNormalMap = LoadImage("res/textures/pbr/DustyCobble/normal.png");
+	m_DustyCobbleMetallicMap = LoadImage("res/textures/pbr/DustyCobble/metallic.png");
+	m_DustyCobbleRoughnessMap = LoadImage("res/textures/pbr/DustyCobble/roughness.png");
+	m_DustyCobbleAOMap = LoadImage("res/textures/pbr/DustyCobble/ao.png");
+
+	m_SpaceCruiserAlbedoMap = LoadImage("res/textures/pbr/SpaceCruiser/albedo.png");
+	m_SpaceCruiserNormalMap = LoadImage("res/textures/pbr/SpaceCruiser/normal.png");
+	m_SpaceCruiserMetallicMap = LoadImage("res/textures/pbr/SpaceCruiser/metallic.png");
+	m_SpaceCruiserRoughnessMap = LoadImage("res/textures/pbr/SpaceCruiser/roughness.png");
+	m_SpaceCruiserAOMap = LoadImage("res/textures/pbr/SpaceCruiser/ao.png");
+
+	m_WornShinyAlbedoMap = LoadImage("res/textures/pbr/WornShiny/albedo.png");
+	m_WornShinyNormalMap = LoadImage("res/textures/pbr/WornShiny/normal.png");
+	m_WornShinyMetallicMap = LoadImage("res/textures/pbr/WornShiny/metallic.png");
+	m_WornShinyRoughnessMap = LoadImage("res/textures/pbr/WornShiny/roughness.png");
+	m_WornShinyAOMap = LoadImage("res/textures/pbr/WornShiny/ao.png");
+
+	m_LightGoldAlbedoMap = LoadImage("res/textures/pbr/LightGold/albedo.png");
+	m_LightGoldNormalMap = LoadImage("res/textures/pbr/LightGold/normal.png");
+	m_LightGoldMetallicMap = LoadImage("res/textures/pbr/LightGold/metallic.png");
+	m_LightGoldRoughnessMap = LoadImage("res/textures/pbr/LightGold/roughness.png");
+	m_LightGoldAOMap = LoadImage("res/textures/pbr/LightGold/ao.png");
+
+	m_TitaniumScuffedAlbedoMap = LoadImage("res/textures/pbr/TitaniumScuffed/albedo.png");
+	m_TitaniumScuffedNormalMap = LoadImage("res/textures/pbr/TitaniumScuffed/normal.png");
+	m_TitaniumScuffedMetallicMap = LoadImage("res/textures/pbr/TitaniumScuffed/metallic.png");
+	m_TitaniumScuffedRoughnessMap = LoadImage("res/textures/pbr/TitaniumScuffed/roughness.png");
+	m_TitaniumScuffedAOMap = LoadImage("res/textures/pbr/TitaniumScuffed/ao.png");
+
+	m_StreakedMetalAlbedoMap = LoadImage("res/textures/pbr/StreakedMetal/albedo.png");
+	m_StreakedMetalNormalMap = LoadImage("res/textures/pbr/StreakedMetal/normal.png");
+	m_StreakedMetalMetallicMap = LoadImage("res/textures/pbr/StreakedMetal/metallic.png");
+	m_StreakedMetalRoughnessMap = LoadImage("res/textures/pbr/StreakedMetal/roughness.png");
+	m_StreakedMetalAOMap = LoadImage("res/textures/pbr/StreakedMetal/ao.png");
 
 	// 着色器程序
 	m_Shader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL-Texture/Vertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL-Texture/Fragment.Fshader");
@@ -57,8 +99,8 @@ test::TesPBRSpecularIBL_Texture::TesPBRSpecularIBL_Texture()
 	m_BackgroundShader->Unbind();
 
 	//pbr: load the HDR environment map
-	//m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Alexs_Apartment/Alexs_Apt_2k.hdr");
-	m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Stadium_Center/Stadium_Center_3k.hdr");
+	m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Alexs_Apartment/Alexs_Apt_2k.hdr");
+	//m_HdrTexture = LoadHdrImage("res/textures/DiffuseIrradiance/Stadium_Center/Stadium_Center_3k.hdr");
 
 	// pbr: setup framebuffer
 	// ----------------------
@@ -586,31 +628,134 @@ void test::TesPBRSpecularIBL_Texture::OnRender()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_PrefilterMap);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, m_BrdfLUTTexture);
+
+	//Iron
 	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, m_AlbedoMap);
+	glBindTexture(GL_TEXTURE_2D, m_IronAlbedoMap);
 	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, m_NormalMap);
+	glBindTexture(GL_TEXTURE_2D, m_IronNormalMap);
 	glActiveTexture(GL_TEXTURE5);
-	glBindTexture(GL_TEXTURE_2D, m_MetallicMap);
+	glBindTexture(GL_TEXTURE_2D, m_IronMetallicMap);
 	glActiveTexture(GL_TEXTURE6);
-	glBindTexture(GL_TEXTURE_2D, m_RoughnessMap);
+	glBindTexture(GL_TEXTURE_2D, m_IronRoughnessMap);
 	glActiveTexture(GL_TEXTURE7);
-	glBindTexture(GL_TEXTURE_2D, m_AOMap);
-	glm::mat4 model = glm::mat4(1.0f);
-	for (int row = 0; row < nrRows; ++row)
-	{
-		for (int col = 0; col < nrColumns; ++col)
-		{
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(
-				(col - (nrColumns / 2)) * spacing,
-				(row - (nrRows / 2)) * spacing,
-				-2.0f
-			));
-			m_Shader->SetUniformsMat4f("model", model);
-			RenderSphere();
-		}
-	}
+	glBindTexture(GL_TEXTURE_2D, m_IronAOMap);
+	m_Model = glm::mat4(1.0f);
+	m_Model = glm::translate(m_Model, glm::vec3(-5.0, 0.0, 2.0));
+	m_Shader->SetUniformsMat4f("model", m_Model);
+	RenderSphere();
+
+	//GrayGranite
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, m_GrayGraniteAlbedoMap);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_GrayGraniteNormalMap);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_GrayGraniteMetallicMap);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_GrayGraniteRoughnessMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, m_GrayGraniteAOMap);
+	m_Model = glm::mat4(1.0f);
+	m_Model = glm::translate(m_Model, glm::vec3(-3.0, 0.0, 2.0));
+	m_Shader->SetUniformsMat4f("model", m_Model);
+	RenderSphere();
+
+	//DustyCobble
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, m_DustyCobbleAlbedoMap);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_DustyCobbleNormalMap);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_DustyCobbleMetallicMap);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_DustyCobbleRoughnessMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, m_DustyCobbleAOMap);
+	m_Model = glm::mat4(1.0f);
+	m_Model = glm::translate(m_Model, glm::vec3(-1.0, 0.0, 2.0));
+	m_Shader->SetUniformsMat4f("model", m_Model);
+	RenderSphere();
+
+	//SpaceCruiser
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, m_SpaceCruiserAlbedoMap);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_SpaceCruiserNormalMap);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_SpaceCruiserMetallicMap);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_SpaceCruiserRoughnessMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, m_SpaceCruiserAOMap);
+	m_Model = glm::mat4(1.0f);
+	m_Model = glm::translate(m_Model, glm::vec3(1.0, 0.0, 2.0));
+	m_Shader->SetUniformsMat4f("model", m_Model);
+	RenderSphere();
+
+	//WornShiny
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, m_WornShinyAlbedoMap);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_WornShinyNormalMap);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_WornShinyMetallicMap);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_WornShinyRoughnessMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, m_WornShinyAOMap);
+	m_Model = glm::mat4(1.0f);
+	m_Model = glm::translate(m_Model, glm::vec3(3.0, 0.0, 2.0));
+	m_Shader->SetUniformsMat4f("model", m_Model);
+	RenderSphere();
+
+	//LightGold
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, m_LightGoldAlbedoMap);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_LightGoldNormalMap);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_LightGoldMetallicMap);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_LightGoldRoughnessMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, m_LightGoldAOMap);
+	m_Model = glm::mat4(1.0f);
+	m_Model = glm::translate(m_Model, glm::vec3(5.0, 0.0, 2.0));
+	m_Shader->SetUniformsMat4f("model", m_Model);
+	RenderSphere();
+
+	//TitaniumScuffed
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, m_TitaniumScuffedAlbedoMap);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_TitaniumScuffedNormalMap);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_TitaniumScuffedMetallicMap);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_TitaniumScuffedRoughnessMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, m_TitaniumScuffedAOMap);
+	m_Model = glm::mat4(1.0f);
+	m_Model = glm::translate(m_Model, glm::vec3(7.0, 0.0, 2.0));
+	m_Shader->SetUniformsMat4f("model", m_Model);
+	RenderSphere();
+
+	//StreakedMetal
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, m_StreakedMetalAlbedoMap);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_StreakedMetalNormalMap);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_StreakedMetalMetallicMap);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_StreakedMetalRoughnessMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, m_StreakedMetalAOMap);
+	m_Model = glm::mat4(1.0f);
+	m_Model = glm::translate(m_Model, glm::vec3(9.0, 0.0, 2.0));
+	m_Shader->SetUniformsMat4f("model", m_Model);
+	RenderSphere();
 
 	//灯光
 	for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
@@ -620,10 +765,10 @@ void test::TesPBRSpecularIBL_Texture::OnRender()
 		m_Shader->SetUniforms3f("lightPositions[" + std::to_string(i) + "]", newPos);
 		m_Shader->SetUniforms3f("lightColors[" + std::to_string(i) + "]", lightColors[i]);
 
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, newPos);
-		model = glm::scale(model, glm::vec3(0.5f));
-		m_Shader->SetUniformsMat4f("model", model);
+		m_Model = glm::mat4(1.0f);
+		m_Model = glm::translate(m_Model, newPos);
+		m_Model = glm::scale(m_Model, glm::vec3(0.5f));
+		m_Shader->SetUniformsMat4f("model", m_Model);
 		RenderCube();
 	}
 	m_Shader->Unbind();
