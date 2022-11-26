@@ -1,4 +1,4 @@
-﻿#include "../test/PBRPipleline/PBRSpecularIBL/PBRSpecularIBL.h"
+﻿#include "../test/PBRPipleline/PBRSpecularIBL-Texture/PBRSpecularIBL-Texture.h"
 #include "Global.h"
 
 #include <stb_image/stb_image.h>
@@ -9,7 +9,7 @@
 #include <sstream>
 #include <random>
 
-test::TesPBRSpecularIBL::TesPBRSpecularIBL()
+test::TesPBRSpecularIBL_Texture::TesPBRSpecularIBL_Texture()
 	:m_Shader(nullptr), m_CubemapShader(nullptr), m_IrradianceShader(nullptr), m_BackgroundShader(nullptr),
 	m_PrefilterShader(nullptr), m_BrdfShader(nullptr),
 	m_Camera(nullptr), m_RealModel(nullptr)
@@ -27,20 +27,29 @@ test::TesPBRSpecularIBL::TesPBRSpecularIBL()
 
 	m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 20.0f));	
 
+	m_AlbedoMap = LoadImage("res/textures/pbr/albedo.png");
+	m_NormalMap = LoadImage("res/textures/pbr/normal.png");
+	m_MetallicMap = LoadImage("res/textures/pbr/metallic.png");
+	m_RoughnessMap = LoadImage("res/textures/pbr/roughness.png");
+	m_AOMap = LoadImage("res/textures/pbr/ao.png");
+
 	// 着色器程序
-	m_Shader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL/Vertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL/Fragment.Fshader");
-	m_CubemapShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL/CubemapVertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL/CubemapFragment.Fshader");
-	m_IrradianceShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL/CubemapVertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL/IrradianceFragment.Fshader");
-	m_PrefilterShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL/CubemapVertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL/PrefilterFragment.Fshader");
-	m_BrdfShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL/BrdfVertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL/BrdfFragment.Fshader");
-	m_BackgroundShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL/BackgroundVertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL/BackgroundFragment.Fshader");
+	m_Shader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL-Texture/Vertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL-Texture/Fragment.Fshader");
+	m_CubemapShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL-Texture/CubemapVertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL-Texture/CubemapFragment.Fshader");
+	m_IrradianceShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL-Texture/CubemapVertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL-Texture/IrradianceFragment.Fshader");
+	m_PrefilterShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL-Texture/CubemapVertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL-Texture/PrefilterFragment.Fshader");
+	m_BrdfShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL-Texture/BrdfVertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL-Texture/BrdfFragment.Fshader");
+	m_BackgroundShader = std::make_unique<Shader>("res/shaders/PBRPipleline/PBRSpecularIBL-Texture/BackgroundVertex.Vshader", "res/shaders/PBRPipleline/PBRSpecularIBL-Texture/BackgroundFragment.Fshader");
 
 	m_Shader->Bind();
 	m_Shader->SetUniform1i("irradianceMap", 0);
 	m_Shader->SetUniform1i("prefilterMap", 1);
 	m_Shader->SetUniform1i("brdfLUT", 2);
-	m_Shader->SetUniforms3f("albedo", glm::vec3(0.5f, 0.0f, 0.0f));
-	m_Shader->SetUniform1f("ao", 1.0f);
+	m_Shader->SetUniform1i("albedoMap", 3);
+	m_Shader->SetUniform1i("normalMap", 4);
+	m_Shader->SetUniform1i("metallicMap", 5);
+	m_Shader->SetUniform1i("roughnessMap", 6);
+	m_Shader->SetUniform1i("aoMap", 7);
 	m_Shader->Unbind();
 
 	m_BackgroundShader->Bind();
@@ -233,7 +242,7 @@ test::TesPBRSpecularIBL::TesPBRSpecularIBL()
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 }
 
-test::TesPBRSpecularIBL::~TesPBRSpecularIBL()
+test::TesPBRSpecularIBL_Texture::~TesPBRSpecularIBL_Texture()
 {
 	//资源释放
 	GLCall(glDeleteVertexArrays(1, &m_QuadVAO));
@@ -243,17 +252,17 @@ test::TesPBRSpecularIBL::~TesPBRSpecularIBL()
 	GLCall(glDeleteVertexArrays(1, &m_SphereVAO));
 }
 
-void test::TesPBRSpecularIBL::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)
+void test::TesPBRSpecularIBL_Texture::OnProcessMouseMovement(GLfloat xoffset, GLfloat yoffset)
 {
 	m_Camera->OnProcessMouseMovement(xoffset, yoffset);
 }
 
-void test::TesPBRSpecularIBL::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
+void test::TesPBRSpecularIBL_Texture::OnProcessInput(GLFWwindow* window, GLfloat deltaTime)
 {
 	m_Camera->OnProcessInput(window, deltaTime);
 }
 
-int test::TesPBRSpecularIBL::LoadImage(char const* filename)
+int test::TesPBRSpecularIBL_Texture::LoadImage(char const* filename)
 {
 	unsigned int textureID;
 	GLCall(glGenTextures(1, &textureID));
@@ -290,7 +299,7 @@ int test::TesPBRSpecularIBL::LoadImage(char const* filename)
 	return textureID;
 }
 
-int test::TesPBRSpecularIBL::LoadImage(char const* filename, bool gammaCorrection)
+int test::TesPBRSpecularIBL_Texture::LoadImage(char const* filename, bool gammaCorrection)
 {
 	unsigned int textureID;
 	GLCall(glGenTextures(1, &textureID));
@@ -336,7 +345,7 @@ int test::TesPBRSpecularIBL::LoadImage(char const* filename, bool gammaCorrectio
 	return textureID;
 }
 
-int test::TesPBRSpecularIBL::LoadHdrImage(char const* filename)
+int test::TesPBRSpecularIBL_Texture::LoadHdrImage(char const* filename)
 {
 	stbi_set_flip_vertically_on_load(true);
 	int width, height, nrComponents;
@@ -363,7 +372,7 @@ int test::TesPBRSpecularIBL::LoadHdrImage(char const* filename)
 	return hdrTexture;
 }
 
-void test::TesPBRSpecularIBL::RenderQuad()
+void test::TesPBRSpecularIBL_Texture::RenderQuad()
 {
 	if (m_QuadVAO == 0)
 	{
@@ -390,7 +399,7 @@ void test::TesPBRSpecularIBL::RenderQuad()
 	glBindVertexArray(0);
 }
 
-void test::TesPBRSpecularIBL::RenderCube()
+void test::TesPBRSpecularIBL_Texture::RenderCube()
 {
 	if (m_CubeVAO == 0)
 	{
@@ -461,7 +470,7 @@ void test::TesPBRSpecularIBL::RenderCube()
 	glBindVertexArray(0);
 }
 
-void test::TesPBRSpecularIBL::RenderSphere()
+void test::TesPBRSpecularIBL_Texture::RenderSphere()
 {
 	if (m_SphereVAO == 0)
 	{
@@ -554,12 +563,12 @@ void test::TesPBRSpecularIBL::RenderSphere()
 	glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0);
 }
 
-void test::TesPBRSpecularIBL::OnUpdate(float deltaTime)
+void test::TesPBRSpecularIBL_Texture::OnUpdate(float deltaTime)
 {
 	
 }
 
-void test::TesPBRSpecularIBL::OnRender()
+void test::TesPBRSpecularIBL_Texture::OnRender()
 {
 	GLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -577,16 +586,21 @@ void test::TesPBRSpecularIBL::OnRender()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_PrefilterMap);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, m_BrdfLUTTexture);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, m_AlbedoMap);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_NormalMap);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_MetallicMap);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_RoughnessMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, m_AOMap);
 	glm::mat4 model = glm::mat4(1.0f);
 	for (int row = 0; row < nrRows; ++row)
 	{
-		m_Shader->SetUniform1f("metallic", (float)row / (float)nrRows);
 		for (int col = 0; col < nrColumns; ++col)
 		{
-			// we clamp the roughness to 0.05 - 1.0 as perfectly smooth surfaces (roughness of 0.0) tend to look a bit off
-			// on direct lighting.
-			m_Shader->SetUniform1f("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
-
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(
 				(col - (nrColumns / 2)) * spacing,
@@ -626,7 +640,7 @@ void test::TesPBRSpecularIBL::OnRender()
 	m_BackgroundShader->Unbind();
 }
 
-void test::TesPBRSpecularIBL::OnImGuiRender()
+void test::TesPBRSpecularIBL_Texture::OnImGuiRender()
 {
 	//ImGui::SliderFloat3("ViewPos", &m_ViewPos.x, -6.0f, 6.0f);
 }
