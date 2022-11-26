@@ -44,6 +44,7 @@
 #include "test/PBRPipleline/PBRDiffuseIrradiance/TesPBRDiffuseIrradiance.h"
 #include "test/PBRPipleline/PBRSpecularIBL/PBRSpecularIBL.h"
 #include "test/PBRPipleline/PBRSpecularIBL-Texture/PBRSpecularIBL-Texture.h"
+#include "test/TestTextRendering.h"
 
 int main()
 {
@@ -153,6 +154,7 @@ int main()
 	testMenu->RegisterTest<::test::TesPBRDiffuseIrradiance>("PBRDiffuseIrradiance");
 	testMenu->RegisterTest<::test::TesPBRSpecularIBL>("PBRSpecularIBL");
 	testMenu->RegisterTest<::test::TesPBRSpecularIBL_Texture>("PBRSpecularIBL_Texture");
+	testMenu->RegisterTest<::test::TestTextRendering>("TextRendering");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
