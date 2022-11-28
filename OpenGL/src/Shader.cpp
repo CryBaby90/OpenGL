@@ -26,6 +26,12 @@ Shader::~Shader()
 	GLCall(glDeleteProgram(m_ShaderID));
 }
 
+void Shader::Compile(const std::string& vertexFilepath, const std::string& fragmentFilepath, const std::string& geometryFilepath)
+{
+	ShaderSource source = ParseShader(vertexFilepath, fragmentFilepath, geometryFilepath);
+	m_ShaderID = CreateShader(source.VertexSource, source.FragmentSource, source.GeometrySource);
+}
+
 ShaderSource Shader::ParseShader(const std::string& vertexFilepath, const std::string& fragmentFilepath, const std::string& geometryFilepath)
 {
 	enum class ShaderType

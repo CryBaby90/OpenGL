@@ -24,9 +24,12 @@ private:
 	// caching for uniforms
 	mutable ::std::unordered_map<std::string, int> m_UniformLocationCache;
 public:
+	Shader() {}
 	Shader(const std::string& vertexFilepath, const std::string& fragmentFilepath);
 	Shader(const std::string& vertexFilepath, const std::string& fragmentFilepath, const std::string& geometryFilepath);
 	~Shader();
+
+	void Compile(const std::string& vertexFilepath, const std::string& fragmentFilepath, const std::string& geometryFilepath);
 
 	void Bind() const;
 	void Unbind()const;

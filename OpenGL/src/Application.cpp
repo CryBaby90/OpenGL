@@ -45,6 +45,8 @@
 #include "test/PBRPipleline/PBRSpecularIBL/PBRSpecularIBL.h"
 #include "test/PBRPipleline/PBRSpecularIBL-Texture/PBRSpecularIBL-Texture.h"
 #include "test/TestTextRendering.h"
+#include "test/Breakout/Head/Game.h"
+#include "test/Breakout/Head/ResourceManager.h"
 
 int main()
 {
@@ -155,6 +157,7 @@ int main()
 	testMenu->RegisterTest<::test::TesPBRSpecularIBL>("PBRSpecularIBL");
 	testMenu->RegisterTest<::test::TesPBRSpecularIBL_Texture>("PBRSpecularIBL_Texture");
 	testMenu->RegisterTest<::test::TestTextRendering>("TextRendering");
+	testMenu->RegisterTest<::test::Game>("Breakout");
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -207,6 +210,8 @@ int main()
 		// ImGui Rendering  
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		ResourceManager::Clear();
 
 		// 检查并调用事件，交换缓冲
 		glfwSwapBuffers(window);

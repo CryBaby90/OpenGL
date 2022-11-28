@@ -192,6 +192,21 @@
     <ClCompile Include="src\test\TestTextRendering.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\test\Breakout\Game.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\Breakout\Texture2D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\Breakout\Head\ResourceManager.h">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\Breakout\ResourceManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\Breakout\SpriteRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\GLCall.h">
@@ -1392,6 +1407,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\include\freetype\tttags.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\Breakout\Head\Game.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\Breakout\Head\Texture2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\Breakout\Head\SpriteRenderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
