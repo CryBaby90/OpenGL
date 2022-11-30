@@ -102,11 +102,6 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\test\Breakout\Game.cpp" />
-    <ClCompile Include="src\test\Breakout\ResourceManager.cpp" />
-    <ClCompile Include="src\test\Breakout\Head\ResourceManager.h" />
-    <ClCompile Include="src\test\Breakout\SpriteRenderer.cpp" />
-    <ClCompile Include="src\test\Breakout\Texture2D.cpp" />
     <ClCompile Include="src\test\PBRPipleline\PBRDiffuseIrradiance\TesPBRDiffuseIrradiance.cpp" />
     <ClCompile Include="src\test\PBRPipleline\PBRLighting\TestPBRLighting.cpp" />
     <ClCompile Include="src\test\PBRPipleline\PBRSpecularIBL-Texture\PBRSpecularIBL-Texture.cpp" />
@@ -224,9 +219,6 @@
     <ClInclude Include="src\include\Model.h" />
     <ClInclude Include="src\include\OtherCamera.h" />
     <ClInclude Include="src\include\Shader.h" />
-    <ClInclude Include="src\test\Breakout\Head\Game.h" />
-    <ClInclude Include="src\test\Breakout\Head\SpriteRenderer.h" />
-    <ClInclude Include="src\test\Breakout\Head\Texture2D.h" />
     <ClInclude Include="src\test\PBRPipleline\PBRDiffuseIrradiance\TesPBRDiffuseIrradiance.h" />
     <ClInclude Include="src\test\PBRPipleline\PBRLighting\TesPBRLighting.h" />
     <ClInclude Include="src\test\PBRPipleline\PBRSpecularIBL-Texture\PBRSpecularIBL-Texture.h" />

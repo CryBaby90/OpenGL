@@ -1,5 +1,5 @@
 #pragma once
-#include <glad/glad.h>
+#include <glad/glad.h> //需要添加 glad.c 到当前目录
 #include <GLFW/glfw3.h>
 
 #define ASSERT(x) if(!(x)) __debugbreak();
